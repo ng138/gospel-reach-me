@@ -22,6 +22,8 @@ body {
   height: 100%;
   z-index: -1;
   overflow: hidden;
+  /* Default fallback gradient */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 #background-container img,
@@ -31,6 +33,13 @@ body {
   object-fit: cover;
   display: block;
   transition: opacity 0.5s ease-in-out;
+}
+
+/* Ensure gradient backgrounds fill the container */
+#background-container.gradient-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Header & Language Switcher */

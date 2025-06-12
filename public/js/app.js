@@ -22,6 +22,7 @@ const verseViewBtn = document.getElementById('verse-view-btn');
 const mapViewBtn = document.getElementById('map-view-btn');
 const verseView = document.getElementById('verse-view');
 const mapView = document.getElementById('map-view');
+const testFallbackBtn = document.getElementById('test-fallback-btn');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
@@ -84,8 +85,13 @@ function setupEventListeners() {
   
   // Refresh button
   refreshBtn.addEventListener('click', async () => {
+    console.log('Refresh button clicked');
     await refreshVerse();
     await refreshBackground();
+    // Add debug information after refresh
+    setTimeout(() => {
+      logBackgroundStatus();
+    }, 1000);
   });
   
   // Name form submission
@@ -113,6 +119,15 @@ function setupEventListeners() {
   
   mapViewBtn.addEventListener('click', () => {
     switchToMapView();
+  });
+  
+  // Test fallback background button
+  testFallbackBtn.addEventListener('click', () => {
+    console.log('Testing fallback background');
+    setFallbackBackground();
+    setTimeout(() => {
+      logBackgroundStatus();
+    }, 500);
   });
 }
 
@@ -233,25 +248,138 @@ async function refreshBackground() {
     
     // Clear previous background
     backgroundContainer.innerHTML = '';
+    backgroundContainer.style.background = ''; // Clear any existing gradient
     
     // Create new element based on type
     if (data.type === 'image') {
       const img = document.createElement('img');
-      img.src = data.url;
       img.alt = 'Background';
+      
+      // Add error handling for image loading
+      img.onerror = () => {
+        console.log('External image failed to load, using fallback');
+        setFallbackBackground();
+      };
+      
+      // Add load success handler
+      img.onload = () => {
+        console.log('Background image loaded successfully');
+      };
+      
+      img.src = data.url;
       backgroundContainer.appendChild(img);
+      
+      // Set a timeout in case the image takes too long to load
+      setTimeout(() => {
+        if (!img.complete || img.naturalHeight === 0) {
+          console.log('Image loading timeout, using fallback');
+          setFallbackBackground();
+        }
+      }, 5000); // 5 second timeout
+      
     } else if (data.type === 'video') {
       const video = document.createElement('video');
-      video.src = data.url;
       video.autoplay = true;
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
+      
+      // Add error handling for video loading
+      video.onerror = () => {
+        console.log('Video failed to load, using fallback');
+        setFallbackBackground();
+      };
+      
+      video.src = data.url;
       backgroundContainer.appendChild(video);
+    } else if (data.type === 'gradient') {
+      // Handle gradient backgrounds from API
+      backgroundContainer.style.background = data.background;
+      
+      // Add a subtle pattern overlay for visual interest
+      const pattern = document.createElement('div');
+      pattern.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        pointer-events: none;
+      `;
+      
+      backgroundContainer.appendChild(pattern);
+      console.log('Gradient background applied successfully');
     }
   } catch (error) {
     console.error('Error refreshing background:', error);
+    setFallbackBackground();
   }
+}
+
+// Set fallback background when external images fail
+function setFallbackBackground() {
+  // Clear any existing content
+  backgroundContainer.innerHTML = '';
+  
+  // List of local fallback backgrounds (CSS gradients and patterns)
+  const fallbackBackgrounds = [
+    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+    'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+    'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    'linear-gradient(135deg, #c471ed 0%, #f64f59 100%)'
+  ];
+  
+  // Select a random fallback background
+  const randomFallback = fallbackBackgrounds[Math.floor(Math.random() * fallbackBackgrounds.length)];
+  
+  // Apply the gradient background directly to the container
+  backgroundContainer.style.background = randomFallback;
+  
+  // Create a subtle pattern overlay
+  const pattern = document.createElement('div');
+  pattern.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  `;
+  
+  backgroundContainer.appendChild(pattern);
+  console.log('Fallback background applied:', randomFallback);
+}
+
+// Add debug information for background loading
+function logBackgroundStatus() {
+  console.log('Background container element:', backgroundContainer);
+  console.log('Background container children:', backgroundContainer.children.length);
+  console.log('Background container style:', backgroundContainer.style.background);
+  
+  const images = backgroundContainer.querySelectorAll('img');
+  const videos = backgroundContainer.querySelectorAll('video');
+  
+  console.log('Images in background container:', images.length);
+  console.log('Videos in background container:', videos.length);
+  
+  images.forEach((img, index) => {
+    console.log(`Image ${index}:`, {
+      src: img.src,
+      complete: img.complete,
+      naturalWidth: img.naturalWidth,
+      naturalHeight: img.naturalHeight
+    });
+  });
 }
 
 // Submit name

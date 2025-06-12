@@ -194,25 +194,41 @@ export default {
         
         // Random background endpoint
         if (path === '/api/random-background' && request.method === 'GET') {
-          // In a real implementation, this would fetch from your background_media_index.json or KV
-          // For now, we'll use some hard-coded sample backgrounds
-          
+          // Mix of reliable image sources - using Unsplash and local fallbacks
           const backgrounds = [
+            // Unsplash nature/spiritual images (more reliable than Pexels)
             {
               type: 'image',
-              url: 'https://images.pexels.com/photos/1261728/pexels-photo-1261728.jpeg?auto=compress&cs=tinysrgb&w=1920'
+              url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+            },
+            {
+              type: 'image', 
+              url: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
             },
             {
               type: 'image',
-              url: 'https://images.pexels.com/photos/2559941/pexels-photo-2559941.jpeg?auto=compress&cs=tinysrgb&w=1920'
+              url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
             },
             {
               type: 'image',
-              url: 'https://images.pexels.com/photos/531972/pexels-photo-531972.jpeg?auto=compress&cs=tinysrgb&w=1920'
+              url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
             },
             {
               type: 'image',
-              url: 'https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg?auto=compress&cs=tinysrgb&w=1920'
+              url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+            },
+            // Fallback CSS gradients (these will always work)
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            },
+            {
+              type: 'gradient', 
+              background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
             }
           ];
           
