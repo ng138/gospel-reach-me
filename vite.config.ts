@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/gospel-reach-me/',
   optimizeDeps: {
     exclude: ['lucide-react'],
     include: ['react', 'react-dom']

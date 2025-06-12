@@ -33,38 +33,59 @@ const verseFilesMap: Record<string, any> = {
   'DE_ELB': bibleVersesDEELB
 };
 
-// API URL will be used when connecting to the actual Cloudflare Worker
-// const API_BASE_URL = 'http://localhost:5173/api';
+// Cloudflare Worker API URL - will be set via environment variables
+const WORKER_API_URL = import.meta.env.VITE_WORKER_URL || 'https://gospel-reach-me-worker.ng138.workers.dev';
 
 // Track the last verse index for each language/version to avoid repeats
 const lastVerseIndices: Record<string, number> = {};
 
 // Get random verse based on language and version
 export async function getRandomVerse(language: string, versionCode: string): Promise<VerseData> {
-  // Add a small delay to simulate network request
+  // In production, try to use the worker API first
+  if (import.meta.env.PROD) {
+    try {
+      const response = await fetch(`${WORKER_API_URL}/api/verse`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          language: language.toUpperCase(),
+          version: versionCode
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          text: data.verse_content,
+          reference: data.reference,
+          index: data.index
+        };
+      }
+    } catch (error) {
+      console.warn('Worker API unavailable, falling back to local data:', error);
+    }
+  }
+
+  // Fallback to local data (for development or when worker is unavailable)
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Ensure language is uppercase and construct the key properly
   const key = `${language.toUpperCase()}_${versionCode}`;
-  
   console.log('Loading verses for key:', key);
   
-  // Check if we have verses for this language/version combination
   if (!verseFilesMap[key]) {
     console.warn(`No verses found for ${key}, falling back to EN_KJV`);
   }
   
-  const verses = verseFilesMap[key] || bibleVersesENKJV; // Fallback to KJV if not found
+  const verses = verseFilesMap[key] || bibleVersesENKJV;
   
-  // Get a random verse that's different from the last one
   let randomIndex = Math.floor(Math.random() * verses.length);
   const lastIndex = lastVerseIndices[key];
   
-  // Try up to 10 times to get a different verse
   if (lastIndex !== undefined) {
     for (let i = 0; i < 10; i++) {
       const newIndex = Math.floor(Math.random() * verses.length);
-      // If we have a different index, use it and break
       if (newIndex !== lastIndex) {
         randomIndex = newIndex;
         break;
@@ -72,16 +93,13 @@ export async function getRandomVerse(language: string, versionCode: string): Pro
     }
   }
   
-  // Store this index as the last one used for this language/version
   lastVerseIndices[key] = randomIndex;
-  
   const randomVerse = verses[randomIndex];
   
-  // Add a timestamp to make each verse appear unique even if content is the same
   return {
     text: randomVerse.verse_content,
     reference: randomVerse.reference,
-    index: `${randomVerse.index}-${Date.now().toString().slice(-6)}` // Add timestamp suffix
+    index: `${randomVerse.index}-${Date.now().toString().slice(-6)}`
   };
 }
 
@@ -93,13 +111,28 @@ let lastBackgroundIndex: number | undefined;
 
 // Get random background
 export async function getRandomBackground(): Promise<BackgroundData> {
-  // Add a small delay to simulate network request
+  // In production, try to use the worker API first
+  if (import.meta.env.PROD) {
+    try {
+      const response = await fetch(`${WORKER_API_URL}/api/background`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          type: 'image',
+          url: data.url
+        };
+      }
+    } catch (error) {
+      console.warn('Worker API unavailable for background, falling back to local data:', error);
+    }
+  }
+
+  // Fallback to local data
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Get a random background that's different from the last one
   let randomIndex = Math.floor(Math.random() * backgroundMediaIndex.length);
   
-  // Try up to 5 times to get a different background
   if (lastBackgroundIndex !== undefined) {
     for (let i = 0; i < 5; i++) {
       const newIndex = Math.floor(Math.random() * backgroundMediaIndex.length);
@@ -110,28 +143,18 @@ export async function getRandomBackground(): Promise<BackgroundData> {
     }
   }
   
-  // Store this index as the last one used
   lastBackgroundIndex = randomIndex;
-  
-  // Get the background from the index
   const background = backgroundMediaIndex[randomIndex];
   
-  // All URLs are now real and working - no need for placeholder replacement
-  
-  // Return image background
   return {
     type: 'image',
     url: background.url
   };
 }
 
-// API URL for the Cloudflare Worker
-const WORKER_API_URL = 'https://gospel-reach-me-worker.your-subdomain.workers.dev';
-
 // Get global stats from the Cloudflare Worker's global counter
 export async function getGlobalStats() {
   try {
-    // In development mode, we'll use a local endpoint
     const apiUrl = import.meta.env.PROD
       ? `${WORKER_API_URL}/api/stats`
       : '/api/stats';
@@ -146,7 +169,7 @@ export async function getGlobalStats() {
   } catch (error) {
     console.error('Error fetching global stats:', error);
     
-    // Fallback data in case the API call fails
+    // Fallback data
     return {
       total: 12500,
       countries: {
@@ -160,15 +183,31 @@ export async function getGlobalStats() {
 
 // Submit name
 export async function submitName(data: NameSubmission): Promise<{ success: boolean }> {
-  // Mock implementation
+  try {
+    if (import.meta.env.PROD) {
+      const response = await fetch(`${WORKER_API_URL}/api/submit-name`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        return await response.json();
+      }
+    }
+  } catch (error) {
+    console.warn('Worker API unavailable for name submission, using fallback:', error);
+  }
+
+  // Fallback implementation
   await new Promise(resolve => setTimeout(resolve, 1000));
   
-  // Simulate validation
   if (!data.user_name || !data.user_id) {
     throw new Error('Missing required fields');
   }
   
-  // 10% chance of failure for testing error handling
   if (Math.random() < 0.1) {
     throw new Error('Submission failed. Please try again.');
   }
@@ -179,56 +218,30 @@ export async function submitName(data: NameSubmission): Promise<{ success: boole
 // Get user's country and suggested language based on geo-location
 export async function getCountryAndLanguage(): Promise<{ country: string; suggestedLanguage: string }> {
   try {
-    // In development mode, we'll use a fallback
+    // In development mode, simulate different countries
     if (!import.meta.env.PROD) {
-      // For development, we can simulate different countries for testing
       const testCountries = ['FR', 'DE', 'ES', 'IT', 'US', 'CA', 'GB'];
       const randomCountry = testCountries[Math.floor(Math.random() * testCountries.length)];
       
-      // Map countries to languages
       const countryToLanguage: Record<string, string> = {
-        'FR': 'FR',  // France -> French
-        'BE': 'FR',  // Belgium -> French (though it could also be Dutch/German)
-        'CH': 'FR',  // Switzerland -> French (though it could also be German/Italian)
-        'MC': 'FR',  // Monaco -> French
-        'DE': 'DE',  // Germany -> German
-        'AT': 'DE',  // Austria -> German
-        'LI': 'DE',  // Liechtenstein -> German
-        'ES': 'ES',  // Spain -> Spanish
-        'MX': 'ES',  // Mexico -> Spanish
-        'AR': 'ES',  // Argentina -> Spanish
-        'CO': 'ES',  // Colombia -> Spanish
-        'PE': 'ES',  // Peru -> Spanish
-        'CL': 'ES',  // Chile -> Spanish
-        'IT': 'IT',  // Italy -> Italian
-        'SM': 'IT',  // San Marino -> Italian
-        'VA': 'IT',  // Vatican City -> Italian
-        'US': 'EN',  // United States -> English
-        'GB': 'EN',  // United Kingdom -> English
-        'CA': 'EN',  // Canada -> English (though could also be French)
-        'AU': 'EN',  // Australia -> English
-        'NZ': 'EN',  // New Zealand -> English
-        'IE': 'EN',  // Ireland -> English
+        'FR': 'FR', 'BE': 'FR', 'CH': 'FR', 'MC': 'FR',
+        'DE': 'DE', 'AT': 'DE', 'LI': 'DE',
+        'ES': 'ES', 'MX': 'ES', 'AR': 'ES', 'CO': 'ES', 'PE': 'ES', 'CL': 'ES',
+        'IT': 'IT', 'SM': 'IT', 'VA': 'IT',
+        'US': 'EN', 'GB': 'EN', 'CA': 'EN', 'AU': 'EN', 'NZ': 'EN', 'IE': 'EN',
       };
       
       const suggestedLanguage = countryToLanguage[randomCountry] || 'EN';
       
       console.log(`[DEV] Simulated geo-detection: ${randomCountry} -> ${suggestedLanguage}`);
       
-      return {
-        country: randomCountry,
-        suggestedLanguage
-      };
+      return { country: randomCountry, suggestedLanguage };
     }
     
-    // In production, call the worker API to get country from CF-IPCountry header
-    const apiUrl = `${WORKER_API_URL}/api/geo-detect`;
-    
-    const response = await fetch(apiUrl, {
+    // In production, call the worker API
+    const response = await fetch(`${WORKER_API_URL}/api/geo-detect`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      headers: { 'Content-Type': 'application/json' }
     });
     
     if (!response.ok) {
@@ -245,10 +258,6 @@ export async function getCountryAndLanguage(): Promise<{ country: string; sugges
   } catch (error) {
     console.error('Error detecting country/language:', error);
     
-    // Fallback to English and US
-    return {
-      country: 'US',
-      suggestedLanguage: 'EN'
-    };
+    return { country: 'US', suggestedLanguage: 'EN' };
   }
 }
