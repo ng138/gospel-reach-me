@@ -39,6 +39,127 @@ const verseFilesMap: Record<string, any> = {
 // Track the last verse index for each language/version to avoid repeats
 const lastVerseIndices: Record<string, number> = {};
 
+// Real-time stats tracking
+interface StatsData {
+  verseViews: number;
+  refreshClicks: number;
+  languageSwitches: Record<string, number>;
+  versionSwitches: Record<string, number>;
+  nameSubmissions: number;
+  lastUpdated: number;
+  sessionId: string;
+}
+
+// Initialize stats tracking
+let localStats: StatsData = {
+  verseViews: 0,
+  refreshClicks: 0,
+  languageSwitches: {},
+  versionSwitches: {},
+  nameSubmissions: 0,
+  lastUpdated: Date.now(),
+  sessionId: generateSessionId()
+};
+
+// Load existing stats from localStorage
+function loadLocalStats(): void {
+  try {
+    const stored = localStorage.getItem('gospel-reach-stats');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      localStats = { ...localStats, ...parsed };
+    }
+  } catch (error) {
+    console.warn('Failed to load local stats:', error);
+  }
+}
+
+// Save stats to localStorage
+function saveLocalStats(): void {
+  try {
+    localStats.lastUpdated = Date.now();
+    localStorage.setItem('gospel-reach-stats', JSON.stringify(localStats));
+  } catch (error) {
+    console.warn('Failed to save local stats:', error);
+  }
+}
+
+// Generate session ID
+function generateSessionId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// Initialize stats on module load
+loadLocalStats();
+
+// Track verse view
+export function trackVerseView(language: string, version: string): void {
+  localStats.verseViews++;
+  const key = `${language}_${version}`;
+  localStats.versionSwitches[key] = (localStats.versionSwitches[key] || 0) + 1;
+  saveLocalStats();
+  
+  // Optional: Send to analytics service
+  sendToAnalytics('verse_view', {
+    language,
+    version,
+    timestamp: Date.now()
+  });
+}
+
+// Track refresh click
+export function trackRefreshClick(): void {
+  localStats.refreshClicks++;
+  saveLocalStats();
+  
+  sendToAnalytics('refresh_click', {
+    timestamp: Date.now()
+  });
+}
+
+// Track language switch
+export function trackLanguageSwitch(fromLang: string, toLang: string): void {
+  localStats.languageSwitches[toLang] = (localStats.languageSwitches[toLang] || 0) + 1;
+  saveLocalStats();
+  
+  sendToAnalytics('language_switch', {
+    from: fromLang,
+    to: toLang,
+    timestamp: Date.now()
+  });
+}
+
+// Track name submission
+export function trackNameSubmission(): void {
+  localStats.nameSubmissions++;
+  saveLocalStats();
+  
+  sendToAnalytics('name_submission', {
+    timestamp: Date.now()
+  });
+}
+
+// Send analytics data to external service (configurable)
+async function sendToAnalytics(event: string, data: any): Promise<void> {
+  // Option 1: Google Analytics 4
+  if (typeof (window as any).gtag !== 'undefined') {
+    (window as any).gtag('event', event, data);
+  }
+  
+  // Option 2: Simple HTTP endpoint (you can replace with your preferred service)
+  try {
+    const analyticsEndpoint = 'https://api.countapi.xyz/hit/gospel-reach-me.pages.dev/' + event;
+    await fetch(analyticsEndpoint, { method: 'GET' });
+  } catch (error) {
+    console.warn('Analytics request failed:', error);
+  }
+}
+
+// Get real local stats
+export function getLocalStats(): StatsData {
+  return { ...localStats };
+}
+
 // Get random verse based on language and version - PURE FRONTEND VERSION
 export async function getRandomVerse(language: string, versionCode: string): Promise<VerseData> {
   // Add a small delay to simulate network request
@@ -105,17 +226,58 @@ export async function getRandomBackground(): Promise<BackgroundData> {
   };
 }
 
-// Get simulated global stats - FRONTEND ONLY VERSION
+// Get combined real + simulated global stats
 export async function getGlobalStats() {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  // Generate dynamic stats that change over time for realism
+  // Get real stats from multiple sources
+  const realStats = await fetchRealGlobalStats();
+  
+  return realStats;
+}
+
+// Fetch real global stats from analytics service
+async function fetchRealGlobalStats() {
+  try {
+    // Option 1: Use CountAPI.xyz (free, simple)
+    const endpoints = [
+      'https://api.countapi.xyz/get/gospel-reach-me.pages.dev/verse_view',
+      'https://api.countapi.xyz/get/gospel-reach-me.pages.dev/refresh_click',
+      'https://api.countapi.xyz/get/gospel-reach-me.pages.dev/language_switch',
+      'https://api.countapi.xyz/get/gospel-reach-me.pages.dev/name_submission'
+    ];
+    
+    const responses = await Promise.allSettled(
+      endpoints.map(url => fetch(url).then(r => r.json()))
+    );
+    
+    let totalViews = 0;
+    responses.forEach(response => {
+      if (response.status === 'fulfilled' && response.value?.value) {
+        totalViews += response.value.value;
+      }
+    });
+    
+    // If we have real data, use it; otherwise fall back to simulation
+    if (totalViews > 0) {
+      return {
+        total: totalViews,
+        countries: await generateCountryDistribution(totalViews),
+        isReal: true
+      };
+    }
+  } catch (error) {
+    console.warn('Failed to fetch real stats:', error);
+  }
+  
+  // Fallback to enhanced simulation with some real elements
   const baseTime = Date.now();
   const dailyVariation = Math.floor(baseTime / (1000 * 60 * 60 * 24)) % 100;
+  const localViewsContribution = localStats.verseViews;
   
   return {
-    total: 15000 + dailyVariation * 10,
+    total: 15000 + dailyVariation * 10 + localViewsContribution,
     countries: {
       US: 1500 + (dailyVariation % 10), 
       GB: 750 + (dailyVariation % 8), 
@@ -132,8 +294,33 @@ export async function getGlobalStats() {
       RU: 425 + (dailyVariation % 8), 
       NG: 250 + (dailyVariation % 4), 
       ZA: 200 + (dailyVariation % 3)
-    }
+    },
+    isReal: false
   };
+}
+
+// Generate country distribution based on total views
+async function generateCountryDistribution(totalViews: number): Promise<Record<string, number>> {
+  // Distribute views across countries based on typical web traffic patterns
+  const distribution = {
+    US: 0.25,    // 25%
+    GB: 0.12,    // 12% 
+    CA: 0.08,    // 8%
+    DE: 0.10,    // 10%
+    FR: 0.09,    // 9%
+    ES: 0.11,    // 11%
+    IT: 0.07,    // 7%
+    BR: 0.08,    // 8%
+    IN: 0.05,    // 5%
+    AU: 0.05     // 5%
+  };
+  
+  const countries: Record<string, number> = {};
+  Object.entries(distribution).forEach(([country, percentage]) => {
+    countries[country] = Math.floor(totalViews * percentage);
+  });
+  
+  return countries;
 }
 
 // Submit name - FRONTEND SIMULATION

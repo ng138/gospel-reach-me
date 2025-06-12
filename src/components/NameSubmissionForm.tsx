@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
+import { trackNameSubmission } from '../services/apiService';
 
 interface NameSubmissionFormProps {
   anonymousId: string;
@@ -27,6 +28,10 @@ export function NameSubmissionForm({ anonymousId }: NameSubmissionFormProps) {
       // Simple name submission without verification
       // Store in localStorage for demo
       localStorage.setItem(`name_${anonymousId}`, name.trim());
+      
+      // Track name submission
+      trackNameSubmission();
+      
       setSubmitStatus('success');
       setName('');
     } catch (error) {

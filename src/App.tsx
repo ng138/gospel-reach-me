@@ -7,7 +7,14 @@ import { NameSubmissionForm } from './components/NameSubmissionForm';
 import { BibleVerse } from './components/BibleVerse';
 import { Footer } from './components/Footer';
 import { useAnonymousId } from './hooks/useAnonymousId';
-import { getRandomVerse, getRandomBackground, getCountryAndLanguage } from './services/apiService';
+import { 
+  getRandomVerse, 
+  getRandomBackground, 
+  getCountryAndLanguage,
+  trackVerseView,
+  trackRefreshClick,
+  trackLanguageSwitch 
+} from './services/apiService';
 import { VerseData, BackgroundData } from './types';
 
 function App() {
@@ -25,6 +32,9 @@ function App() {
     try {
       const verseData = await getRandomVerse(currentLanguage, currentVersion);
       setVerse(verseData);
+      
+      // Track verse view
+      trackVerseView(currentLanguage, currentVersion);
     } catch (error) {
       console.error('Failed to load verse:', error);
     } finally {
@@ -95,7 +105,14 @@ function App() {
 
   // Handle language change
   const handleLanguageChange = (language: string) => {
+    const previousLanguage = currentLanguage;
     setCurrentLanguage(language);
+    
+    // Track language switch
+    if (previousLanguage !== language) {
+      trackLanguageSwitch(previousLanguage, language);
+    }
+    
     // Set default version for selected language
     switch (language) {
       case 'EN': setCurrentVersion('KJV'); break;
@@ -115,6 +132,9 @@ function App() {
   const handleRefresh = () => {
     if (!isLoading) {
       console.log('Refreshing verse for language:', currentLanguage, 'version:', currentVersion);
+      
+      // Track refresh click
+      trackRefreshClick();
       
       // Set loading state without clearing the current verse
       // This prevents the "Could not load verse" message from appearing
