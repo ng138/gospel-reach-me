@@ -303,24 +303,33 @@ async function fetchRealGlobalStats() {
     console.warn('Failed to fetch real stats:', error);
   }
   
-  // Fallback to enhanced simulation with some real elements
+  // Enhanced simulation that includes local user contributions for real-time feel
   const baseTime = Date.now();
   const dailyVariation = Math.floor(baseTime / (1000 * 60 * 60 * 24)) % 100;
+  const hourlyVariation = Math.floor(baseTime / (1000 * 60 * 60)) % 10;
+  
+  // Include local user's contributions to make it feel more real-time
   const localViewsContribution = localStats.verseViews;
+  const localRefreshContribution = localStats.refreshClicks;
+  const localNameContribution = localStats.nameSubmissions;
+  const totalLocalContribution = localViewsContribution + localRefreshContribution + localNameContribution;
+  
+  // Base number that changes throughout the day
+  const baseTotal = 15000 + dailyVariation * 10 + hourlyVariation * 2;
   
   return {
-    total: 15000 + dailyVariation * 10 + localViewsContribution,
+    total: baseTotal + totalLocalContribution,
     countries: {
-      US: 1500 + (dailyVariation % 10), 
-      GB: 750 + (dailyVariation % 8), 
-      CA: 450 + (dailyVariation % 6), 
-      DE: 650 + (dailyVariation % 7), 
-      FR: 675 + (dailyVariation % 9),
-      ES: 850 + (dailyVariation % 12), 
-      IT: 725 + (dailyVariation % 8), 
-      BR: 925 + (dailyVariation % 15), 
-      MX: 475 + (dailyVariation % 7), 
-      IN: 1100 + (dailyVariation % 20),
+      US: 1500 + (dailyVariation % 10) + Math.floor(totalLocalContribution * 0.25), 
+      GB: 750 + (dailyVariation % 8) + Math.floor(totalLocalContribution * 0.12), 
+      CA: 450 + (dailyVariation % 6) + Math.floor(totalLocalContribution * 0.08), 
+      DE: 650 + (dailyVariation % 7) + Math.floor(totalLocalContribution * 0.10), 
+      FR: 675 + (dailyVariation % 9) + Math.floor(totalLocalContribution * 0.09),
+      ES: 850 + (dailyVariation % 12) + Math.floor(totalLocalContribution * 0.11), 
+      IT: 725 + (dailyVariation % 8) + Math.floor(totalLocalContribution * 0.07), 
+      BR: 925 + (dailyVariation % 15) + Math.floor(totalLocalContribution * 0.08), 
+      MX: 475 + (dailyVariation % 7) + Math.floor(totalLocalContribution * 0.05), 
+      IN: 1100 + (dailyVariation % 20) + Math.floor(totalLocalContribution * 0.05),
       AU: 300 + (dailyVariation % 5), 
       JP: 350 + (dailyVariation % 6), 
       RU: 425 + (dailyVariation % 8), 
