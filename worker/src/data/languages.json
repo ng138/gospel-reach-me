@@ -1,0 +1,43 @@
+{
+  "EN": {
+    "name": "English",
+    "defaultVersion": "KJV",
+    "versions": {
+      "KJV": "King James Version",
+      "NIV": "New International Version",
+      "ESV": "English Standard Version"
+    }
+  },
+  "FR": {
+    "name": "French",
+    "defaultVersion": "LSG",
+    "versions": {
+      "LSG": "Louis Segond 1910",
+      "BDS": "La Bible du Semeur"
+    }
+  },
+  "IT": {
+    "name": "Italian",
+    "defaultVersion": "CEI",
+    "versions": {
+      "CEI": "Conferenza Episcopale Italiana",
+      "NR94": "Nuova Riveduta 1994"
+    }
+  },
+  "ES": {
+    "name": "Spanish",
+    "defaultVersion": "RVR60",
+    "versions": {
+      "RVR60": "Reina-Valera 1960",
+      "NVI": "Nueva Version Internacional"
+    }
+  },
+  "DE": {
+    "name": "German",
+    "defaultVersion": "LUTH2017",
+    "versions": {
+      "LUTH2017": "Lutherbibel 2017",
+      "ELB": "Elberfelder Bibel"
+    }
+  }
+}

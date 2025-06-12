@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #E6C79C;
+  --secondary: #CDDFA0;
+  --accent: #6FD08C;
+  --success: #7B9EA8;
+  --error: #78586F;
+}
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden;
+    line-height: 1.5;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-slate-900 leading-tight;
+  }
+
+  .verse-text {
+    @apply text-xl md:text-2xl lg:text-3xl font-serif leading-relaxed md:leading-relaxed;
+    font-family: 'Crimson Pro', Georgia, serif;
+  }
+  
+  .verse-reference {
+    @apply text-sm md:text-base text-slate-700 font-medium;
+  }
+}
+
+@layer components {
+  .language-button {
+    @apply px-3 py-1.5 rounded-lg font-medium transition-all
+           focus:outline-none focus:ring-2 focus:ring-[#E6C79C] focus:ring-opacity-60;
+  }
+  
+  .language-button.active {
+    @apply bg-[#E6C79C] text-white;
+  }
+  
+  .language-button:not(.active) {
+    @apply bg-white/75 text-slate-700 hover:bg-slate-100/75;
+  }
+  
+  .name-input {
+    @apply block w-full py-2 px-3 bg-white/75 rounded-lg border border-[#E6C79C]
+           focus:outline-none focus:ring-2 focus:ring-[#E6C79C] focus:border-transparent
+           text-slate-900;
+  }
+  
+  .submit-button {
+    @apply flex items-center gap-2 px-4 py-2 rounded-lg font-medium
+           bg-[#CDDFA0] text-slate-800 shadow-sm
+           hover:bg-opacity-90 transition-all
+           focus:outline-none focus:ring-2 focus:ring-[#CDDFA0] focus:ring-opacity-60;
+  }
+}
+
+.background-container {
+  @apply fixed top-0 left-0 w-full h-full z-[-1] overflow-hidden;
+}
+
+.background-container img,
+.background-container video {
+  @apply w-full h-full object-cover block transition-opacity duration-500 ease-in-out;
+}
+
+.content-container {
+  @apply relative z-10 min-h-screen flex flex-col items-center justify-between p-4 md:p-8;
+}
+
+.main-card {
+  @apply max-w-3xl w-full mx-auto my-8 transition-all duration-300;
+}
+
+.verse-container {
+  @apply relative py-8 px-6 bg-[#E6C79C]/75 backdrop-blur-sm
+         rounded-xl shadow-md text-center mb-8;
+}
+
+.verse-divider {
+  @apply w-16 h-0.5 bg-[#7B9EA8] mx-auto my-4;
+}
+
+.map-container {
+  @apply rounded-xl overflow-hidden shadow-md bg-[#78586F]/75 backdrop-blur-sm
+         w-full h-48 mb-8 flex items-center justify-center;
+}
+
+/* Verse fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.verse-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}

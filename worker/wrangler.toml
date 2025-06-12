@@ -1,0 +1,30 @@
+name = "gospel-reach-me-worker"
+main = "src/index.js"
+compatibility_date = "2025-05-22"
+
+# KV Namespace Bindings
+[[kv_namespaces]]
+binding = "BIBLE_TEXT_KV"
+id = "replace-with-your-kv-namespace-id"
+
+[[kv_namespaces]]
+binding = "USER_SUBMISSIONS_KV"
+id = "replace-with-your-kv-namespace-id"
+
+# R2 Bucket Binding
+[[r2_buckets]]
+binding = "BACKGROUND_MEDIA_R2"
+bucket_name = "gospel-reach-media"
+
+# Durable Object Binding
+[[durable_objects.bindings]]
+name = "GLOBAL_COUNTER_DO"
+class_name = "GlobalCounter"
+
+# Environment Variables
+[vars]
+# Add any public environment variables here
+
+# Secrets
+# Use `wrangler secret put TURNSTILE_SECRET_KEY` to set this
+# TURNSTILE_SECRET_KEY
