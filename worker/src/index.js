@@ -195,6 +195,7 @@ export default {
         // Random background endpoint
         if (path === '/api/random-background' && request.method === 'GET') {
           // Mix of reliable image sources - using Unsplash and local fallbacks
+          // Increased ratio of gradients for better reliability
           const backgrounds = [
             // Unsplash nature/spiritual images (more reliable than Pexels)
             {
@@ -209,15 +210,7 @@ export default {
               type: 'image',
               url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
             },
-            {
-              type: 'image',
-              url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-            },
-            {
-              type: 'image',
-              url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-            },
-            // Fallback CSS gradients (these will always work)
+            // More reliable CSS gradients (higher ratio)
             {
               type: 'gradient',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
@@ -229,6 +222,30 @@ export default {
             {
               type: 'gradient',
               background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #c471ed 0%, #f64f59 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)'
+            },
+            {
+              type: 'gradient',
+              background: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)'
             }
           ];
           

@@ -134,14 +134,19 @@ function setupEventListeners() {
 // Load initial content
 async function loadInitialContent() {
   try {
+    // 立即设置一个备用背景，防止白屏
+    setFallbackBackground();
+    
     // Get language config
     await switchLanguage(currentLang);
     
-    // Load initial background
+    // Load initial background (this will replace the fallback if successful)
     await refreshBackground();
   } catch (error) {
     console.error('Error loading initial content:', error);
     verseContainer.textContent = 'Error loading content. Please try again.';
+    // 确保即使出错也有背景
+    setFallbackBackground();
   }
 }
 
@@ -243,75 +248,26 @@ async function refreshVerse() {
 // Refresh background
 async function refreshBackground() {
   try {
+    // 设置初始备用背景，防止出现空白
+    if (!backgroundContainer.style.background && backgroundContainer.children.length === 0) {
+      setFallbackBackground();
+    }
+    
     const response = await fetch('/api/random-background');
     const data = await response.json();
     
-    // Clear previous background
-    backgroundContainer.innerHTML = '';
-    backgroundContainer.style.background = ''; // Clear any existing gradient
+    console.log('Background API response:', data);
     
     // Create new element based on type
     if (data.type === 'image') {
-      const img = document.createElement('img');
-      img.alt = 'Background';
-      
-      // Add error handling for image loading
-      img.onerror = () => {
-        console.log('External image failed to load, using fallback');
-        setFallbackBackground();
-      };
-      
-      // Add load success handler
-      img.onload = () => {
-        console.log('Background image loaded successfully');
-      };
-      
-      img.src = data.url;
-      backgroundContainer.appendChild(img);
-      
-      // Set a timeout in case the image takes too long to load
-      setTimeout(() => {
-        if (!img.complete || img.naturalHeight === 0) {
-          console.log('Image loading timeout, using fallback');
-          setFallbackBackground();
-        }
-      }, 5000); // 5 second timeout
-      
+      await handleImageBackground(data.url);
     } else if (data.type === 'video') {
-      const video = document.createElement('video');
-      video.autoplay = true;
-      video.loop = true;
-      video.muted = true;
-      video.playsInline = true;
-      
-      // Add error handling for video loading
-      video.onerror = () => {
-        console.log('Video failed to load, using fallback');
-        setFallbackBackground();
-      };
-      
-      video.src = data.url;
-      backgroundContainer.appendChild(video);
+      await handleVideoBackground(data.url);
     } else if (data.type === 'gradient') {
-      // Handle gradient backgrounds from API
-      backgroundContainer.style.background = data.background;
-      
-      // Add a subtle pattern overlay for visual interest
-      const pattern = document.createElement('div');
-      pattern.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-          radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
-        pointer-events: none;
-      `;
-      
-      backgroundContainer.appendChild(pattern);
-      console.log('Gradient background applied successfully');
+      handleGradientBackground(data.background);
+    } else {
+      console.warn('Unknown background type:', data.type);
+      setFallbackBackground();
     }
   } catch (error) {
     console.error('Error refreshing background:', error);
@@ -319,9 +275,130 @@ async function refreshBackground() {
   }
 }
 
+// Handle image background with enhanced error handling
+async function handleImageBackground(imageUrl) {
+  return new Promise((resolve) => {
+    const img = document.createElement('img');
+    img.alt = 'Background';
+    
+    let isResolved = false;
+    const resolveOnce = (success) => {
+      if (!isResolved) {
+        isResolved = true;
+        resolve(success);
+      }
+    };
+    
+    // Set a shorter timeout (3 seconds instead of 5)
+    const timeoutId = setTimeout(() => {
+      console.log('Image loading timeout, using fallback');
+      setFallbackBackground();
+      resolveOnce(false);
+    }, 3000);
+    
+    img.onload = () => {
+      clearTimeout(timeoutId);
+      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+        console.log('Background image loaded successfully');
+        // Clear previous background
+        backgroundContainer.innerHTML = '';
+        backgroundContainer.style.background = '';
+        backgroundContainer.appendChild(img);
+        resolveOnce(true);
+      } else {
+        console.log('Image loaded but has no dimensions, using fallback');
+        setFallbackBackground();
+        resolveOnce(false);
+      }
+    };
+    
+    img.onerror = () => {
+      clearTimeout(timeoutId);
+      console.log('External image failed to load, using fallback');
+      setFallbackBackground();
+      resolveOnce(false);
+    };
+    
+    // Start loading the image
+    img.src = imageUrl;
+  });
+}
+
+// Handle video background with enhanced error handling
+async function handleVideoBackground(videoUrl) {
+  return new Promise((resolve) => {
+    const video = document.createElement('video');
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    
+    let isResolved = false;
+    const resolveOnce = (success) => {
+      if (!isResolved) {
+        isResolved = true;
+        resolve(success);
+      }
+    };
+    
+    const timeoutId = setTimeout(() => {
+      console.log('Video loading timeout, using fallback');
+      setFallbackBackground();
+      resolveOnce(false);
+    }, 5000);
+    
+    video.onloadeddata = () => {
+      clearTimeout(timeoutId);
+      console.log('Background video loaded successfully');
+      // Clear previous background
+      backgroundContainer.innerHTML = '';
+      backgroundContainer.style.background = '';
+      backgroundContainer.appendChild(video);
+      resolveOnce(true);
+    };
+    
+    video.onerror = () => {
+      clearTimeout(timeoutId);
+      console.log('Video failed to load, using fallback');
+      setFallbackBackground();
+      resolveOnce(false);
+    };
+    
+    video.src = videoUrl;
+  });
+}
+
+// Handle gradient background
+function handleGradientBackground(gradientBackground) {
+  console.log('Applying gradient background:', gradientBackground);
+  
+  // Clear previous background
+  backgroundContainer.innerHTML = '';
+  backgroundContainer.style.background = gradientBackground;
+  
+  // Add a subtle pattern overlay for visual interest
+  const pattern = document.createElement('div');
+  pattern.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  `;
+  
+  backgroundContainer.appendChild(pattern);
+  console.log('Gradient background applied successfully');
+}
+
 // Set fallback background when external images fail
 function setFallbackBackground() {
-  // Clear any existing content
+  console.log('Setting fallback background...');
+  
+  // Clear any existing content immediately
   backgroundContainer.innerHTML = '';
   
   // List of local fallback backgrounds (CSS gradients and patterns)
@@ -342,21 +419,37 @@ function setFallbackBackground() {
   // Apply the gradient background directly to the container
   backgroundContainer.style.background = randomFallback;
   
-  // Create a subtle pattern overlay
-  const pattern = document.createElement('div');
-  pattern.style.cssText = `
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: 
-      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
-    pointer-events: none;
-  `;
+  // Force a style recalculation to ensure immediate application
+  backgroundContainer.offsetHeight;
   
-  backgroundContainer.appendChild(pattern);
+  // Create a subtle pattern overlay with a slight delay to ensure background is applied first
+  setTimeout(() => {
+    // Double-check that we haven't been replaced by a successful image load
+    if (backgroundContainer.style.background === randomFallback) {
+      const pattern = document.createElement('div');
+      pattern.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+          radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+      `;
+      
+      backgroundContainer.appendChild(pattern);
+      
+      // Fade in the pattern
+      setTimeout(() => {
+        pattern.style.opacity = '1';
+      }, 10);
+    }
+  }, 50);
+  
   console.log('Fallback background applied:', randomFallback);
 }
 
