@@ -44,16 +44,16 @@ export function NameSubmissionForm({ anonymousId }: NameSubmissionFormProps) {
 
   return (
     <div className="p-4 md:p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-md">
-      <h2 className="text-xl font-semibold text-slate-800 mb-3">
+      <h2 className="text-xl font-semibold text-slate-800 mb-3 text-center">
         Share Your Name
       </h2>
-      <p className="text-slate-600 mb-4">
+      <p className="text-slate-600 mb-4 text-center">
         How would you like to be addressed?
       </p>
       
       {submitStatus === 'success' ? (
-        <div className="p-4 bg-success/10 rounded-lg text-success font-medium mb-4">
-          Thank you for sharing your name!
+        <div className="p-4 bg-success/10 rounded-lg text-success font-medium mb-4 text-center">
+          Thank you for sharing your name and we will keep you in our prayer.
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
