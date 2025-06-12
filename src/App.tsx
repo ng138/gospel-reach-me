@@ -27,14 +27,17 @@ function App() {
   const [isGeoDetected, setIsGeoDetected] = useState(false);
   
   // Load random verse when language or version changes
-  const loadRandomVerse = useCallback(async () => {
+  const loadRandomVerse = useCallback(async (isManualRefresh = false) => {
     setIsLoading(true);
     try {
       const verseData = await getRandomVerse(currentLanguage, currentVersion);
       setVerse(verseData);
       
-      // Track verse view
-      trackVerseView(currentLanguage, currentVersion);
+      // Only track verse view for automatic loads (language/version changes, initial load)
+      // Manual refresh clicks are tracked separately
+      if (!isManualRefresh) {
+        trackVerseView(currentLanguage, currentVersion);
+      }
     } catch (error) {
       console.error('Failed to load verse:', error);
     } finally {
@@ -133,15 +136,16 @@ function App() {
     if (!isLoading) {
       console.log('Refreshing verse for language:', currentLanguage, 'version:', currentVersion);
       
-      // Track refresh click
+      // Track refresh click (this handles the user interaction)
       trackRefreshClick();
       
       // Set loading state without clearing the current verse
       // This prevents the "Could not load verse" message from appearing
       setIsLoading(true);
       
-      // Load a new verse and always refresh the background
-      loadRandomVerse();
+      // Load a new verse (mark as manual refresh to avoid double counting)
+      // and always refresh the background
+      loadRandomVerse(true); // Pass true to indicate manual refresh
       loadRandomBackground();
     }
   };
