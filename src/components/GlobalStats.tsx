@@ -57,25 +57,19 @@ export function GlobalStats() {
   const countryCount = Object.keys(stats.countries).length;
 
   return (
-    <div className="text-center py-6">
-      <div className="flex items-center justify-center gap-2 mb-3">
-        <Globe className="w-6 h-6 text-primary" />
-        <h3 className="text-xl font-semibold text-slate-800">Global Statistics</h3>
-      </div>
-      
-      <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-        {formattedTotal}
-      </div>
-      <p className="text-lg text-slate-600 mb-3">
-        Gospel activations across {countryCount} countries
-      </p>
-      
-      {/* Data source indicator */}
-      <div className="flex items-center justify-center gap-1">
-        <div className={`w-2 h-2 rounded-full ${stats.isReal ? 'bg-green-500' : 'bg-orange-400'}`} />
-        <span className="text-sm text-slate-500">
-          {stats.isReal ? 'Real-time data' : 'Live simulation'}
-        </span>
+    <div className="py-6">
+      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 text-center">
+        <div className="flex items-center justify-center gap-2 mb-4">
+          <Globe className="w-6 h-6 text-primary" />
+          <h3 className="text-xl font-semibold text-slate-800">Global Statistics</h3>
+        </div>
+        
+        <div className="text-4xl md:text-5xl font-bold text-primary mb-3">
+          {formattedTotal}
+        </div>
+        <p className="text-lg text-slate-600">
+          Gospel activations across {countryCount} countries
+        </p>
       </div>
     </div>
   );

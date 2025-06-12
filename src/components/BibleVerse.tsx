@@ -42,7 +42,7 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
         <button
           onClick={onRefresh}
           disabled={isLoading}
-          className="refresh-button"
+          className="flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
           title="Get a new verse"
         >
           <RefreshCw 
