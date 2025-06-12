@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { WorldMap } from './components/WorldMap';
+import { GlobalStats } from './components/GlobalStats';
 import { BackgroundMedia } from './components/BackgroundMedia';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { VersionSelector } from './components/VersionSelector';
@@ -176,7 +176,7 @@ function App() {
             onRefresh={handleRefresh}
           />
           
-          <WorldMap />
+          <GlobalStats />
           
           <NameSubmissionForm anonymousId={anonymousId} />
         </main>

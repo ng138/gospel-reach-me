@@ -52,13 +52,6 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
           <span>New Verse</span>
         </button>
       </div>
-      
-      {/* Real-time stats hint */}
-      <div className="text-center mt-4">
-        <p className="text-sm text-slate-500">
-          📊 Watch the statistics update in real-time as you interact!
-        </p>
-      </div>
     </div>
   );
 }
