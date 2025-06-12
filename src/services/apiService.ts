@@ -232,7 +232,16 @@ export async function getRandomVerse(language: string, versionCode: string): Pro
 // Track the last background to avoid repeats
 let lastBackgroundIndex: number | undefined;
 
-// Get random background - PURE FRONTEND VERSION
+// Fallback images in case R2 is not available
+const fallbackImages = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center',
+  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&h=1080&fit=crop&crop=center',
+  'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1920&h=1080&fit=crop&crop=center',
+  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920&h=1080&fit=crop&crop=center',
+  'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1920&h=1080&fit=crop&crop=center'
+];
+
+// Get random background with R2 fallback mechanism
 export async function getRandomBackground(): Promise<BackgroundData> {
   // Add a small delay to simulate network request
   await new Promise(resolve => setTimeout(resolve, 200));
@@ -252,9 +261,25 @@ export async function getRandomBackground(): Promise<BackgroundData> {
   lastBackgroundIndex = randomIndex;
   const background = backgroundMediaIndex[randomIndex];
   
+  // Check if the R2 URL is accessible, fallback to Unsplash if needed
+  let finalUrl = background.url;
+  
+  try {
+    // Quick head request to check if R2 image is available
+    const response = await fetch(background.url, { method: 'HEAD', signal: AbortSignal.timeout(3000) });
+    if (!response.ok) {
+      throw new Error('R2 image not available');
+    }
+  } catch (error) {
+    console.warn('R2 image not available, using fallback:', error);
+    // Use fallback image
+    const fallbackIndex = Math.floor(Math.random() * fallbackImages.length);
+    finalUrl = fallbackImages[fallbackIndex];
+  }
+  
   return {
     type: 'image',
-    url: background.url
+    url: finalUrl
   };
 }
 
