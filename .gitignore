@@ -95,9 +95,8 @@ jspm_packages/
 tmp/
 temp/
 
-# Cloudflare Workers
-worker/dist/
-wrangler.toml.backup
+# Cloudflare Workers (deploy separately)
+worker/
 
 # Local development files
 *.local
