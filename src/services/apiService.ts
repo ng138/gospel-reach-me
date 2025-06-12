@@ -39,7 +39,7 @@ const verseFilesMap: Record<string, any> = {
 // Track the last verse index for each language/version to avoid repeats
 const lastVerseIndices: Record<string, number> = {};
 
-// Real-time stats tracking
+// Real-time stats tracking with event system
 interface StatsData {
   verseViews: number;
   refreshClicks: number;
@@ -48,6 +48,35 @@ interface StatsData {
   nameSubmissions: number;
   lastUpdated: number;
   sessionId: string;
+}
+
+// Event system for real-time updates
+type StatsEventListener = (stats: StatsData) => void;
+const statsEventListeners: StatsEventListener[] = [];
+
+// Subscribe to stats updates
+export function subscribeToStatsUpdates(listener: StatsEventListener): () => void {
+  statsEventListeners.push(listener);
+  
+  // Return unsubscribe function
+  return () => {
+    const index = statsEventListeners.indexOf(listener);
+    if (index > -1) {
+      statsEventListeners.splice(index, 1);
+    }
+  };
+}
+
+// Notify all listeners of stats changes
+function notifyStatsListeners(): void {
+  const currentStats = { ...localStats };
+  statsEventListeners.forEach(listener => {
+    try {
+      listener(currentStats);
+    } catch (error) {
+      console.warn('Stats listener error:', error);
+    }
+  });
 }
 
 // Initialize stats tracking
@@ -74,11 +103,14 @@ function loadLocalStats(): void {
   }
 }
 
-// Save stats to localStorage
+// Save stats to localStorage and notify listeners
 function saveLocalStats(): void {
   try {
     localStats.lastUpdated = Date.now();
     localStorage.setItem('gospel-reach-stats', JSON.stringify(localStats));
+    
+    // Immediately notify all listeners for real-time updates
+    notifyStatsListeners();
   } catch (error) {
     console.warn('Failed to save local stats:', error);
   }
@@ -92,12 +124,12 @@ function generateSessionId(): string {
 // Initialize stats on module load
 loadLocalStats();
 
-// Track verse view
+// Track verse view with immediate UI update
 export function trackVerseView(language: string, version: string): void {
   localStats.verseViews++;
   const key = `${language}_${version}`;
   localStats.versionSwitches[key] = (localStats.versionSwitches[key] || 0) + 1;
-  saveLocalStats();
+  saveLocalStats(); // This will trigger immediate UI update
   
   // Optional: Send to analytics service
   sendToAnalytics('verse_view', {
@@ -107,20 +139,20 @@ export function trackVerseView(language: string, version: string): void {
   });
 }
 
-// Track refresh click
+// Track refresh click with immediate UI update
 export function trackRefreshClick(): void {
   localStats.refreshClicks++;
-  saveLocalStats();
+  saveLocalStats(); // This will trigger immediate UI update
   
   sendToAnalytics('refresh_click', {
     timestamp: Date.now()
   });
 }
 
-// Track language switch
+// Track language switch with immediate UI update
 export function trackLanguageSwitch(fromLang: string, toLang: string): void {
   localStats.languageSwitches[toLang] = (localStats.languageSwitches[toLang] || 0) + 1;
-  saveLocalStats();
+  saveLocalStats(); // This will trigger immediate UI update
   
   sendToAnalytics('language_switch', {
     from: fromLang,
@@ -129,10 +161,10 @@ export function trackLanguageSwitch(fromLang: string, toLang: string): void {
   });
 }
 
-// Track name submission
+// Track name submission with immediate UI update
 export function trackNameSubmission(): void {
   localStats.nameSubmissions++;
-  saveLocalStats();
+  saveLocalStats(); // This will trigger immediate UI update
   
   sendToAnalytics('name_submission', {
     timestamp: Date.now()

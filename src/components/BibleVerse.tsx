@@ -1,4 +1,4 @@
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { VerseData } from '../types';
 
 interface BibleVerseProps {
@@ -8,41 +8,56 @@ interface BibleVerseProps {
 }
 
 export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
+  if (isLoading) {
+    return (
+      <div className="verse-container loading">
+        <div className="animate-pulse">
+          <div className="h-6 bg-slate-200 rounded mb-4"></div>
+          <div className="h-4 bg-slate-200 rounded mb-2"></div>
+          <div className="h-4 bg-slate-200 rounded mb-2"></div>
+          <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+        </div>
+      </div>
+    );
+  }
+
   if (!verse) {
     return (
-      <div className="verse-container">
-        <p className="text-slate-600">Could not load verse. Please try refreshing.</p>
+      <div className="verse-container error">
+        <p>Could not load verse. Please try again.</p>
       </div>
     );
   }
 
   return (
-    <div className={`verse-container ${!isLoading ? 'verse-fade-in' : ''}`}>
-      <blockquote 
-        className="verse-text"
-        style={{ opacity: isLoading ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out' }}
-      >
+    <div className="verse-container">
+      <blockquote className="verse-text">
         "{verse.text}"
       </blockquote>
-      <div className="verse-divider"></div>
-      <div className="flex flex-col items-center gap-4">
-        <cite 
-          className="verse-reference block"
-          style={{ opacity: isLoading ? 0.5 : 1, transition: 'opacity 0.2s ease-in-out' }}
-        >
-          {verse.reference}
-        </cite>
-        <button 
+      <cite className="verse-reference">
+        — {verse.reference}
+      </cite>
+      
+      <div className="flex justify-center mt-6">
+        <button
           onClick={onRefresh}
-          className="p-2 rounded-lg bg-[#6FD08C] text-white shadow-sm hover:bg-opacity-90 transition-all"
           disabled={isLoading}
-          aria-label="New verse"
+          className="refresh-button"
+          title="Get a new verse"
         >
-          <RefreshCcw 
+          <RefreshCw 
             size={20} 
-            className={isLoading ? 'animate-spin' : ''}
+            className={isLoading ? 'animate-spin' : ''} 
           />
+          <span>New Verse</span>
         </button>
+      </div>
+      
+      {/* Real-time stats hint */}
+      <div className="text-center mt-4">
+        <p className="text-sm text-slate-500">
+          📊 Watch the statistics update in real-time as you interact!
+        </p>
       </div>
     </div>
   );
