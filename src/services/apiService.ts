@@ -1,17 +1,20 @@
 import { VerseData, BackgroundData, NameSubmission } from '../types';
 
-// Import Bible verse files
-import bibleVersesENKJV from '../../worker/src/data/bible_verses/bible_verses_en_kjv.json';
-import bibleVersesENNIV from '../../worker/src/data/bible_verses/bible_verses_en_niv.json';
-import bibleVersesENESV from '../../worker/src/data/bible_verses/bible_verses_en_esv.json';
-import bibleVersesFRLSG from '../../worker/src/data/bible_verses/bible_verses_fr_lsg.json';
-import bibleVersesFRBDS from '../../worker/src/data/bible_verses/bible_verses_fr_bds.json';
-import bibleVersesITCEI from '../../worker/src/data/bible_verses/bible_verses_it_cei.json';
-import bibleVersesITNR94 from '../../worker/src/data/bible_verses/bible_verses_it_nr94.json';
-import bibleVersesESRVR60 from '../../worker/src/data/bible_verses/bible_verses_es_rvr60.json';
-import bibleVersesESNVI from '../../worker/src/data/bible_verses/bible_verses_es_nvi.json';
-import bibleVersesDELUTH2017 from '../../worker/src/data/bible_verses/bible_verses_de_luth2017.json';
-import bibleVersesDEELB from '../../worker/src/data/bible_verses/bible_verses_de_elb.json';
+// Import Bible verse files from frontend data directory
+import bibleVersesENKJV from '../data/bible_verses/bible_verses_en_kjv.json';
+import bibleVersesENNIV from '../data/bible_verses/bible_verses_en_niv.json';
+import bibleVersesENESV from '../data/bible_verses/bible_verses_en_esv.json';
+import bibleVersesFRLSG from '../data/bible_verses/bible_verses_fr_lsg.json';
+import bibleVersesFRBDS from '../data/bible_verses/bible_verses_fr_bds.json';
+import bibleVersesITCEI from '../data/bible_verses/bible_verses_it_cei.json';
+import bibleVersesITNR94 from '../data/bible_verses/bible_verses_it_nr94.json';
+import bibleVersesESRVR60 from '../data/bible_verses/bible_verses_es_rvr60.json';
+import bibleVersesESNVI from '../data/bible_verses/bible_verses_es_nvi.json';
+import bibleVersesDELUTH2017 from '../data/bible_verses/bible_verses_de_luth2017.json';
+import bibleVersesDEELB from '../data/bible_verses/bible_verses_de_elb.json';
+
+// Import background media index from frontend data directory
+import backgroundMediaIndex from '../data/background_media_index.json';
 
 // Map language/version codes to verse files
 const verseFilesMap: Record<string, any> = {
@@ -102,9 +105,6 @@ export async function getRandomVerse(language: string, versionCode: string): Pro
     index: `${randomVerse.index}-${Date.now().toString().slice(-6)}`
   };
 }
-
-// Import background media index
-import backgroundMediaIndex from '../../worker/src/data/background_media_index.json';
 
 // Track the last background to avoid repeats
 let lastBackgroundIndex: number | undefined;
