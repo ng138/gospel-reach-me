@@ -42,14 +42,13 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
         <button
           onClick={onRefresh}
           disabled={isLoading}
-          className="flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-medium rounded-lg shadow-sm transition-colors duration-200"
+          className="flex items-center justify-center w-12 h-12 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-sm transition-colors duration-200"
           title="Get a new verse"
         >
           <RefreshCw 
             size={20} 
             className={isLoading ? 'animate-spin' : ''} 
           />
-          <span>New Verse</span>
         </button>
       </div>
     </div>
