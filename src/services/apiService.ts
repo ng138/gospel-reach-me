@@ -36,43 +36,13 @@ const verseFilesMap: Record<string, any> = {
   'DE_ELB': bibleVersesDEELB
 };
 
-// Cloudflare Worker API URL - will be set via environment variables
-const WORKER_API_URL = import.meta.env.VITE_WORKER_URL || 'https://gospel-reach-me-worker.ng138.workers.dev';
-
 // Track the last verse index for each language/version to avoid repeats
 const lastVerseIndices: Record<string, number> = {};
 
-// Get random verse based on language and version
+// Get random verse based on language and version - PURE FRONTEND VERSION
 export async function getRandomVerse(language: string, versionCode: string): Promise<VerseData> {
-  // In production, try to use the worker API first
-  if (import.meta.env.PROD) {
-    try {
-      const response = await fetch(`${WORKER_API_URL}/api/verse`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          language: language.toUpperCase(),
-          version: versionCode
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          text: data.verse_content,
-          reference: data.reference,
-          index: data.index
-        };
-      }
-    } catch (error) {
-      console.warn('Worker API unavailable, falling back to local data:', error);
-    }
-  }
-
-  // Fallback to local data (for development or when worker is unavailable)
-  await new Promise(resolve => setTimeout(resolve, 300));
+  // Add a small delay to simulate network request
+  await new Promise(resolve => setTimeout(resolve, 200));
   
   const key = `${language.toUpperCase()}_${versionCode}`;
   console.log('Loading verses for key:', key);
@@ -109,27 +79,10 @@ export async function getRandomVerse(language: string, versionCode: string): Pro
 // Track the last background to avoid repeats
 let lastBackgroundIndex: number | undefined;
 
-// Get random background
+// Get random background - PURE FRONTEND VERSION
 export async function getRandomBackground(): Promise<BackgroundData> {
-  // In production, try to use the worker API first
-  if (import.meta.env.PROD) {
-    try {
-      const response = await fetch(`${WORKER_API_URL}/api/background`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        return {
-          type: 'image',
-          url: data.url
-        };
-      }
-    } catch (error) {
-      console.warn('Worker API unavailable for background, falling back to local data:', error);
-    }
-  }
-
-  // Fallback to local data
-  await new Promise(resolve => setTimeout(resolve, 300));
+  // Add a small delay to simulate network request
+  await new Promise(resolve => setTimeout(resolve, 200));
   
   let randomIndex = Math.floor(Math.random() * backgroundMediaIndex.length);
   
@@ -152,112 +105,77 @@ export async function getRandomBackground(): Promise<BackgroundData> {
   };
 }
 
-// Get global stats from the Cloudflare Worker's global counter
+// Get simulated global stats - FRONTEND ONLY VERSION
 export async function getGlobalStats() {
-  try {
-    const apiUrl = import.meta.env.PROD
-      ? `${WORKER_API_URL}/api/stats`
-      : '/api/stats';
-    
-    const response = await fetch(apiUrl);
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch stats: ${response.status}`);
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 300));
+  
+  // Generate dynamic stats that change over time for realism
+  const baseTime = Date.now();
+  const dailyVariation = Math.floor(baseTime / (1000 * 60 * 60 * 24)) % 100;
+  
+  return {
+    total: 15000 + dailyVariation * 10,
+    countries: {
+      US: 1500 + (dailyVariation % 10), 
+      GB: 750 + (dailyVariation % 8), 
+      CA: 450 + (dailyVariation % 6), 
+      DE: 650 + (dailyVariation % 7), 
+      FR: 675 + (dailyVariation % 9),
+      ES: 850 + (dailyVariation % 12), 
+      IT: 725 + (dailyVariation % 8), 
+      BR: 925 + (dailyVariation % 15), 
+      MX: 475 + (dailyVariation % 7), 
+      IN: 1100 + (dailyVariation % 20),
+      AU: 300 + (dailyVariation % 5), 
+      JP: 350 + (dailyVariation % 6), 
+      RU: 425 + (dailyVariation % 8), 
+      NG: 250 + (dailyVariation % 4), 
+      ZA: 200 + (dailyVariation % 3)
     }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching global stats:', error);
-    
-    // Fallback data
-    return {
-      total: 12500,
-      countries: {
-        US: 1250, GB: 650, CA: 400, DE: 500, FR: 575,
-        ES: 750, IT: 675, BR: 875, MX: 425, IN: 1000,
-        AU: 250, JP: 300, RU: 375, NG: 200, ZA: 175
-      }
-    };
-  }
+  };
 }
 
-// Submit name
+// Submit name - FRONTEND SIMULATION
 export async function submitName(data: NameSubmission): Promise<{ success: boolean }> {
-  try {
-    if (import.meta.env.PROD) {
-      const response = await fetch(`${WORKER_API_URL}/api/submit-name`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-
-      if (response.ok) {
-        return await response.json();
-      }
-    }
-  } catch (error) {
-    console.warn('Worker API unavailable for name submission, using fallback:', error);
-  }
-
-  // Fallback implementation
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 800));
   
   if (!data.user_name || !data.user_id) {
     throw new Error('Missing required fields');
   }
   
-  if (Math.random() < 0.1) {
+  // 95% success rate for demo purposes
+  if (Math.random() < 0.05) {
     throw new Error('Submission failed. Please try again.');
   }
+  
+  console.log('Name submitted (frontend simulation):', data.user_name);
   
   return { success: true };
 }
 
-// Get user's country and suggested language based on geo-location
+// Get user's country and suggested language - FRONTEND SIMULATION
 export async function getCountryAndLanguage(): Promise<{ country: string; suggestedLanguage: string }> {
-  try {
-    // In development mode, simulate different countries
-    if (!import.meta.env.PROD) {
-      const testCountries = ['FR', 'DE', 'ES', 'IT', 'US', 'CA', 'GB'];
-      const randomCountry = testCountries[Math.floor(Math.random() * testCountries.length)];
-      
-      const countryToLanguage: Record<string, string> = {
-        'FR': 'FR', 'BE': 'FR', 'CH': 'FR', 'MC': 'FR',
-        'DE': 'DE', 'AT': 'DE', 'LI': 'DE',
-        'ES': 'ES', 'MX': 'ES', 'AR': 'ES', 'CO': 'ES', 'PE': 'ES', 'CL': 'ES',
-        'IT': 'IT', 'SM': 'IT', 'VA': 'IT',
-        'US': 'EN', 'GB': 'EN', 'CA': 'EN', 'AU': 'EN', 'NZ': 'EN', 'IE': 'EN',
-      };
-      
-      const suggestedLanguage = countryToLanguage[randomCountry] || 'EN';
-      
-      console.log(`[DEV] Simulated geo-detection: ${randomCountry} -> ${suggestedLanguage}`);
-      
-      return { country: randomCountry, suggestedLanguage };
-    }
-    
-    // In production, call the worker API
-    const response = await fetch(`${WORKER_API_URL}/api/geo-detect`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Geo-detection failed: ${response.status}`);
-    }
-    
-    const result = await response.json();
-    
-    return {
-      country: result.country || 'US',
-      suggestedLanguage: result.suggestedLanguage || 'EN'
-    };
-    
-  } catch (error) {
-    console.error('Error detecting country/language:', error);
-    
-    return { country: 'US', suggestedLanguage: 'EN' };
-  }
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 200));
+  
+  // Simulate different countries for variety
+  const countries = ['FR', 'DE', 'ES', 'IT', 'US', 'CA', 'GB', 'AU', 'BR', 'MX'];
+  const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+  
+  const countryToLanguage: Record<string, string> = {
+    'FR': 'FR', 'BE': 'FR', 'CH': 'FR', 'MC': 'FR',
+    'DE': 'DE', 'AT': 'DE', 'LI': 'DE',
+    'ES': 'ES', 'MX': 'ES', 'AR': 'ES', 'CO': 'ES', 'PE': 'ES', 'CL': 'ES',
+    'IT': 'IT', 'SM': 'IT', 'VA': 'IT',
+    'US': 'EN', 'GB': 'EN', 'CA': 'EN', 'AU': 'EN', 'NZ': 'EN', 'IE': 'EN',
+    'BR': 'ES', // Simplified - could be Portuguese
+  };
+  
+  const suggestedLanguage = countryToLanguage[randomCountry] || 'EN';
+  
+  console.log(`[FRONTEND] Simulated geo-detection: ${randomCountry} -> ${suggestedLanguage}`);
+  
+  return { country: randomCountry, suggestedLanguage };
 }
