@@ -1,7 +1,7 @@
 {
   "name": "gospel-reach-me-web",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Gospel Reach Me - Multi-language Bible verse delivery platform frontend",
   "homepage": "https://gospel-reach-me.pages.dev",
