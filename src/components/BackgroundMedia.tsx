@@ -31,7 +31,7 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
       // Add a small delay before switching backgrounds to ensure smooth transition
       const timer = setTimeout(() => {
         setCurrentBackground(background);
-      }, 300);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [background]);
