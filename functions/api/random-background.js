@@ -11,7 +11,7 @@ export async function onRequest(context) {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // 精选纯风景图片集合 - 只包含自然风景
+  // 精选纯自然风景图片集合 - 删除所有非风景内容
   const backgrounds = [
     // 山脉风景
     {
@@ -163,18 +163,6 @@ export async function onRequest(context) {
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1487611459768-bd414656ea10?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1479030160180-b1860951d696?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
     {
       type: 'image',
