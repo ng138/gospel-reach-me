@@ -38,6 +38,7 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
     }
 
     try {
+      console.log(`尝试获取下一张图片 (重试 ${retryCount + 1}/${maxRetries})`);
       const nextBackground = await getRandomBackground();
       setRetryCount(prev => prev + 1);
       setCurrentBackground(nextBackground);
@@ -55,6 +56,7 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
   
   useEffect(() => {
     if (background) {
+      console.log('收到新的背景数据:', background);
       setIsLoaded(false);
       setRetryCount(0); // 重置重试计数
       
@@ -63,30 +65,29 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
         clearTimeout(loadTimeoutRef.current);
       }
       
-      // 设置500ms延迟后开始加载图片
-      const timer = setTimeout(() => {
-        setCurrentBackground(background);
-        
-        // 设置500ms超时检测
-        loadTimeoutRef.current = setTimeout(() => {
-          if (!isLoaded) {
-            handleImageTimeout();
-          }
-        }, 500);
+      // 立即开始加载新图片，不再有500ms延迟
+      setCurrentBackground(background);
+      
+      // 设置500ms超时检测
+      loadTimeoutRef.current = setTimeout(() => {
+        if (!isLoaded) {
+          handleImageTimeout();
+        }
       }, 500);
       
       return () => {
-        clearTimeout(timer);
         if (loadTimeoutRef.current) {
           clearTimeout(loadTimeoutRef.current);
         }
       };
     }
-  }, [background, isLoaded]);
+  }, [background]);
 
   // 当currentBackground变化时，重新设置超时检测
   useEffect(() => {
     if (currentBackground && !isLoaded) {
+      console.log('开始加载图片:', currentBackground.url);
+      
       // 清除之前的超时定时器
       if (loadTimeoutRef.current) {
         clearTimeout(loadTimeoutRef.current);
@@ -108,6 +109,7 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
   }, [currentBackground, isLoaded, retryCount]);
 
   const handleImageLoad = () => {
+    console.log('图片加载成功');
     setIsLoaded(true);
     setRetryCount(0); // 成功加载后重置重试计数
     
