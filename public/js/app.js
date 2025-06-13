@@ -22,7 +22,6 @@ const verseViewBtn = document.getElementById('verse-view-btn');
 const mapViewBtn = document.getElementById('map-view-btn');
 const verseView = document.getElementById('verse-view');
 const mapView = document.getElementById('map-view');
-const testFallbackBtn = document.getElementById('test-fallback-btn');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
@@ -119,15 +118,6 @@ function setupEventListeners() {
   
   mapViewBtn.addEventListener('click', () => {
     switchToMapView();
-  });
-  
-  // Test fallback background button
-  testFallbackBtn.addEventListener('click', () => {
-    console.log('Testing fallback background');
-    setFallbackBackground();
-    setTimeout(() => {
-      logBackgroundStatus();
-    }, 500);
   });
 }
 
@@ -247,12 +237,9 @@ async function refreshVerse() {
 
 // Refresh background
 async function refreshBackground() {
+  // 先显示备用背景，彻底杜绝空白
+  setFallbackBackground();
   try {
-    // 设置初始备用背景，防止出现空白
-    if (!backgroundContainer.style.background && backgroundContainer.children.length === 0) {
-      setFallbackBackground();
-    }
-    
     const response = await fetch('/api/random-background');
     const data = await response.json();
     
@@ -280,6 +267,8 @@ async function handleImageBackground(imageUrl) {
   return new Promise((resolve) => {
     const img = document.createElement('img');
     img.alt = 'Background';
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.5s ease-in-out';
     
     let isResolved = false;
     const resolveOnce = (success) => {
@@ -291,8 +280,7 @@ async function handleImageBackground(imageUrl) {
     
     // Set a shorter timeout (3 seconds instead of 5)
     const timeoutId = setTimeout(() => {
-      console.log('Image loading timeout, using fallback');
-      setFallbackBackground();
+      console.log('Image loading timeout, keeping fallback');
       resolveOnce(false);
     }, 3000);
     
@@ -300,22 +288,26 @@ async function handleImageBackground(imageUrl) {
       clearTimeout(timeoutId);
       if (img.naturalWidth > 0 && img.naturalHeight > 0) {
         console.log('Background image loaded successfully');
-        // Clear previous background
+        // Clear previous content but keep background gradient
         backgroundContainer.innerHTML = '';
-        backgroundContainer.style.background = '';
+        // Add image and fade it in over the gradient
         backgroundContainer.appendChild(img);
+        
+        // Fade in the image smoothly
+        setTimeout(() => {
+          img.style.opacity = '1';
+        }, 10);
+        
         resolveOnce(true);
       } else {
-        console.log('Image loaded but has no dimensions, using fallback');
-        setFallbackBackground();
+        console.log('Image loaded but has no dimensions, keeping fallback');
         resolveOnce(false);
       }
     };
     
     img.onerror = () => {
       clearTimeout(timeoutId);
-      console.log('External image failed to load, using fallback');
-      setFallbackBackground();
+      console.log('External image failed to load, keeping fallback');
       resolveOnce(false);
     };
     
