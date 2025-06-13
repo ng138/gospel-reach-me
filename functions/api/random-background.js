@@ -2,21 +2,18 @@ export async function onRequest(context) {
   // CORS headers
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 
   // Handle preflight requests
   if (context.request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(null, { headers: corsHeaders });
   }
 
-  // 高质量可靠的Unsplash图片（25张不重复的图片）
+  // 精选纯风景图片集合 - 只包含自然风景
   const backgrounds = [
-    // 自然风景图片 - 山脉和森林
+    // 山脉风景
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -100,7 +97,7 @@ export async function onRequest(context) {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
-    // 新增的高质量图片
+    // 森林和自然
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -119,13 +116,9 @@ export async function onRequest(context) {
     },
     {
       type: 'image',
-      url: 'https://images.unsplash.com/photo-1418065460487-3956c3043904?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    // 新增额外的25张风景图片
-    {
-      type: 'image',
       url: 'https://images.unsplash.com/photo-1501761098459-44421618aaa0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
+    // 日出日落
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1516569424565-9f3ca1e57a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -146,83 +139,7 @@ export async function onRequest(context) {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1467833434042-3e9f51f04ea1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1446493236191-76d379dd2a69?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1430814818720-5e1f6378e1e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1422456346107-899e76d1a40b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1414851600808-afdab59597e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1408869455530-5a9b15fbdc6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1406735203143-70cd3b5cdd07?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1401896457552-ce62197d4a40?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1397450572710-9af4f9d7cf08?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1387521910578-69ecc2d5d8df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1371115277840-abb07f774d94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1360076909463-ac5f6be16ac5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1352761145383-823acfea31e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1342958051929-d4b8588f46bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1329222650-5ddb01b73762?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1302980575330-42bfd5990e83?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1296215871524-15c90eb2138e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1289696989141-ff611d30cdf0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1274821371798-f18e6a751a7f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    // 额外新增的25张高质量风景图片（全新不重复）
+    // 更多自然风景
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -318,10 +235,6 @@ export async function onRequest(context) {
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1421789665209-c9b2a435e3dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     }
   ];
   
