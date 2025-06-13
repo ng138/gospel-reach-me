@@ -14,11 +14,9 @@ export interface VerseData {
 
 // Background media data
 export interface BackgroundData {
-  type: 'image' | 'gradient';
-  /** Image URL when type is 'image' */
-  url?: string;
-  /** CSS gradient string when type is 'gradient' */
-  background?: string;
+  type: 'image';
+  /** Image URL */
+  url: string;
 }
 
 // Name submission data

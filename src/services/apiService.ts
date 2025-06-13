@@ -235,10 +235,16 @@ export async function getRandomBackground(): Promise<BackgroundData> {
     return data;
   } catch (error) {
     console.error('Failed to fetch random background:', error);
-    // Fallback to a default gradient
+    // Fallback to a default image
+    const fallbackImages = [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+      'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80',
+      'https://images.unsplash.com/photo-1501436513145-30f24e19fcc4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    ];
+    const randomFallback = fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
     return {
-      type: 'gradient',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      type: 'image',
+      url: randomFallback
     };
   }
 }
