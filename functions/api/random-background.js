@@ -14,9 +14,9 @@ export async function onRequest(context) {
     });
   }
 
-  // 高质量可靠的Unsplash图片（经过验证的稳定链接）
+  // 高质量可靠的Unsplash图片（25张不重复的图片）
   const backgrounds = [
-    // 自然风景图片
+    // 自然风景图片 - 山脉和森林
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -37,6 +37,7 @@ export async function onRequest(context) {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
+    // 海洋和海滩
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -53,6 +54,11 @@ export async function onRequest(context) {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    },
+    // 湖泊和河流
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -73,6 +79,7 @@ export async function onRequest(context) {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1464822759844-d150baec3014?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
+    // 天空和云彩
     {
       type: 'image',
       url: 'https://images.unsplash.com/photo-1454391304352-2bf4678b1a7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
@@ -91,11 +98,28 @@ export async function onRequest(context) {
     },
     {
       type: 'image',
-      url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+      url: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    },
+    // 新增的高质量图片
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
     {
       type: 'image',
-      url: 'https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+      url: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1418065460487-3956c3043904?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'
     },
     // 可靠的CSS渐变背景（确保总有备用方案）
     {
