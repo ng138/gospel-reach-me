@@ -13,9 +13,6 @@ import bibleVersesESNVI from '../data/bible_verses/bible_verses_es_nvi.json';
 import bibleVersesDELUTH2017 from '../data/bible_verses/bible_verses_de_luth2017.json';
 import bibleVersesDEELB from '../data/bible_verses/bible_verses_de_elb.json';
 
-// Import background media index from frontend data directory
-import backgroundMediaIndex from '../data/background_media_index.json';
-
 // Map language/version codes to verse files
 const verseFilesMap: Record<string, any> = {
   // English versions
@@ -229,58 +226,21 @@ export async function getRandomVerse(language: string, versionCode: string): Pro
   };
 }
 
-// Track the last background to avoid repeats
-let lastBackgroundIndex: number | undefined;
-
-// Fallback images in case R2 is not available
-const fallbackImages = [
-  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&h=1080&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=1920&h=1080&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1920&h=1080&fit=crop&crop=center',
-  'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1920&h=1080&fit=crop&crop=center'
-];
-
-// Get random background with R2 fallback mechanism
+// Get random background by calling the Cloudflare Pages function
 export async function getRandomBackground(): Promise<BackgroundData> {
-  // Add a small delay to simulate network request
-  await new Promise(resolve => setTimeout(resolve, 200));
-  
-  let randomIndex = Math.floor(Math.random() * backgroundMediaIndex.length);
-  
-  if (lastBackgroundIndex !== undefined) {
-    for (let i = 0; i < 5; i++) {
-      const newIndex = Math.floor(Math.random() * backgroundMediaIndex.length);
-      if (newIndex !== lastBackgroundIndex) {
-        randomIndex = newIndex;
-        break;
-      }
-    }
-  }
-  
-  lastBackgroundIndex = randomIndex;
-  const background = backgroundMediaIndex[randomIndex];
-  
-  // Check if the R2 URL is accessible, fallback to Unsplash if needed
-  let finalUrl = background.url;
-  
   try {
-    // Quick head request to check if R2 image is available
-    const response = await fetch(background.url, { method: 'HEAD', signal: AbortSignal.timeout(3000) });
-    if (!response.ok) {
-      throw new Error('R2 image not available');
-    }
+    const response = await fetch('/api/random-background');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = (await response.json()) as BackgroundData;
+    return data;
   } catch (error) {
-    console.warn('R2 image not available, using fallback:', error);
-    // Use fallback image
-    const fallbackIndex = Math.floor(Math.random() * fallbackImages.length);
-    finalUrl = fallbackImages[fallbackIndex];
+    console.error('Failed to fetch random background:', error);
+    // Fallback to a default gradient
+    return {
+      type: 'gradient',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    };
   }
-  
-  return {
-    type: 'image',
-    url: finalUrl
-  };
 }
 
 // Get combined real + simulated global stats

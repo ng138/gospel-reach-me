@@ -20,31 +20,30 @@ export function BackgroundMedia({ background }: BackgroundMediaProps) {
     }
   }, [background]);
 
-  // Fallback background if the requested one fails to load
-  const fallbackBg = "https://images.pexels.com/photos/1261728/pexels-photo-1261728.jpeg?auto=compress&cs=tinysrgb&w=1920";
+  // Default fallback gradient
+  const defaultGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
   
   return (
-    <div className="background-container">
+    <div
+      className="background-container"
+      style={{
+        background: currentBackground?.type === 'gradient'
+          ? currentBackground.background
+          : defaultGradient
+      }}
+    >
       {/* Color overlay for better readability */}
       <div className="absolute inset-0 bg-black/30 z-[-1]"></div>
       
-      {currentBackground ? (
-        <img 
+      {/* Only render image overlays for image backgrounds */}
+      {currentBackground?.type === 'image' && (
+        <img
           src={currentBackground.url}
           alt=""
-          className={`${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
           onLoad={() => setIsLoaded(true)}
-          onError={(e) => {
-            console.error('Image failed to load:', e);
-            (e.target as HTMLImageElement).src = fallbackBg;
-          }}
-        />
-      ) : (
-        // Fallback while loading or if no background is available
-        <img 
-          src={fallbackBg} 
-          alt="" 
-          className="opacity-100"
         />
       )}
     </div>
