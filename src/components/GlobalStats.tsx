@@ -1,3 +1,4 @@
+// Global statistics component with glassmorphism design
 import { useState, useEffect } from 'react';
 import { getGlobalStats, subscribeToStatsUpdates } from '../services/apiService';
 import { Globe, Heart } from 'lucide-react';

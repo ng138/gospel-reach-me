@@ -1,3 +1,4 @@
+// Name submission form component with glassmorphism design
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { trackNameSubmission } from '../services/apiService';
