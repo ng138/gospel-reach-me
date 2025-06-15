@@ -45,7 +45,7 @@ export function GlobalStats() {
   if (isLoading) {
     return (
       <div className="py-6">
-        <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6">
+        <div className="bg-white/75 backdrop-blur-md rounded-xl shadow-lg p-6">
           <div className="flex flex-col items-center gap-4 animate-pulse">
             <div className="h-8 bg-slate-200 rounded w-48"></div>
             <div className="h-12 bg-slate-200 rounded w-32"></div>
@@ -64,7 +64,7 @@ export function GlobalStats() {
 
   return (
     <div className="py-6">
-      <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg p-6 text-center">
+      <div className="bg-white/75 backdrop-blur-md rounded-xl shadow-lg p-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-6">
           <Heart className="w-6 h-6 text-red-500" />
           <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>

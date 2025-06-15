@@ -44,7 +44,7 @@ export function NameSubmissionForm({ anonymousId }: NameSubmissionFormProps) {
   };
 
   return (
-    <div className="p-4 md:p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-md">
+    <div className="p-4 md:p-6 bg-white/75 backdrop-blur-md rounded-xl shadow-md">
       <h2 className="text-xl font-semibold text-slate-800 mb-3 text-center">
         Share Your Name
       </h2>
