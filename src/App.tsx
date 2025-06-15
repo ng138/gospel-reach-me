@@ -5,6 +5,7 @@ import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { VersionSelector } from './components/VersionSelector';
 import { NameSubmissionForm } from './components/NameSubmissionForm';
 import { BibleVerse } from './components/BibleVerse';
+import { FloatingAudioPlayer } from './components/FloatingAudioPlayer';
 import { Footer } from './components/Footer';
 import { useAnonymousId } from './hooks/useAnonymousId';
 import { 
@@ -150,6 +151,23 @@ function App() {
     }
   };
 
+  // 获取当前语言的TTS语言代码
+  const getTTSLanguage = (lang: string) => {
+    const languageMap: { [key: string]: string } = {
+      'EN': 'en',
+      'FR': 'fr', 
+      'IT': 'it',
+      'ES': 'es',
+      'DE': 'de'
+    };
+    return languageMap[lang] || 'en';
+  };
+
+  // 获取当前版本的TTS版本代码
+  const getTTSVersion = (version: string) => {
+    return version.toLowerCase();
+  };
+
   return (
     <>
       <BackgroundMedia background={background} />
@@ -187,6 +205,16 @@ function App() {
         
         <Footer />
       </div>
+
+      {/* 浮动音频播放器 */}
+      {verse && (
+        <FloatingAudioPlayer
+          verseId={verse.index}
+          language={getTTSLanguage(currentLanguage)}
+          version={getTTSVersion(currentVersion)}
+          isVisible={!isLoading && !!verse}
+        />
+      )}
     </>
   );
 }

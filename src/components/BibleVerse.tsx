@@ -1,7 +1,6 @@
 import { RefreshCw } from 'lucide-react';
 import { VerseData } from '../types';
 import { useState, useEffect } from 'react';
-import { AudioPlayer } from './AudioPlayer';
 
 interface BibleVerseProps {
   verse: VerseData | null;
@@ -27,7 +26,7 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
   const currentVerse = displayVerse || verse;
 
   return (
-    <div className="text-center space-y-6">
+    <div className="text-center space-y-6 pb-24">
       {/* 经文内容 */}
       <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
         {currentVerse ? (
@@ -41,17 +40,6 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
             <cite className="block text-lg md:text-xl text-white/70 font-medium">
               — {currentVerse.reference}
             </cite>
-
-            {/* 音频播放器 */}
-            <div className="max-w-md mx-auto mt-6">
-              <AudioPlayer
-                verseId={currentVerse.index}
-                language={currentVerse.language || 'en'}
-                version={currentVerse.version || 'esv'}
-                reference={currentVerse.reference}
-                text={currentVerse.verse_content || currentVerse.text}
-              />
-            </div>
           </div>
         ) : (
           <div className="text-white/50">
