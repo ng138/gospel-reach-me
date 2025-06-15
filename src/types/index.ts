@@ -8,8 +8,11 @@ export interface Language {
 // Bible verse data
 export interface VerseData {
   text: string;
+  verse_content: string; // 经文内容（与text相同，但保持兼容性）
   reference: string;
   index: string;
+  language?: string; // 语言代码
+  version?: string;  // 版本代码
 }
 
 // Background media data
