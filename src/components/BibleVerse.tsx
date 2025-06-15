@@ -12,59 +12,77 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
   const [displayVerse, setDisplayVerse] = useState<VerseData | null>(verse);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Handle verse transitions with fade effect
   useEffect(() => {
-    if (verse && verse !== displayVerse) {
+    if (isLoading) {
+      // Start fade out
       setIsTransitioning(true);
+    } else if (verse && verse !== displayVerse) {
+      // New verse loaded, fade in after a short delay
       const timer = setTimeout(() => {
         setDisplayVerse(verse);
         setIsTransitioning(false);
       }, 150);
       return () => clearTimeout(timer);
+    } else if (verse) {
+      // Initial load
+      setDisplayVerse(verse);
+      setIsTransitioning(false);
     }
-  }, [verse, displayVerse]);
+  }, [verse, isLoading, displayVerse]);
 
-  const currentVerse = displayVerse || verse;
+  if (!displayVerse && !isLoading) {
+    return (
+      <div className="verse-container min-h-[280px] flex items-center justify-center mb-24">
+        <p className="text-slate-600">Could not load verse. Please try again.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="text-center space-y-6 pb-24">
-      {/* 经文内容 */}
-      <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-        {currentVerse ? (
-          <div className="space-y-4">
-            {/* 经文文本 */}
-            <blockquote className="text-xl md:text-2xl lg:text-3xl font-light leading-relaxed text-white/90 max-w-4xl mx-auto">
-              "{currentVerse.verse_content || currentVerse.text}"
-            </blockquote>
-            
-            {/* 经文出处 */}
-            <cite className="block text-lg md:text-xl text-white/70 font-medium">
-              — {currentVerse.reference}
-            </cite>
-          </div>
-        ) : (
-          <div className="text-white/50">
-            <p className="text-xl">Loading verse...</p>
-          </div>
-        )}
+    <div className="verse-container min-h-[280px] flex flex-col justify-between mb-24">
+      {/* Verse content area with fixed height */}
+      <div className="flex-1 flex flex-col justify-center">
+        <div 
+          className={`transition-opacity duration-300 ease-in-out ${
+            isTransitioning ? 'opacity-30' : 'opacity-100'
+          }`}
+        >
+          {displayVerse ? (
+            <>
+              <blockquote className="verse-text mb-4">
+                "{displayVerse.verse_content || displayVerse.text}"
+              </blockquote>
+              <cite className="verse-reference">
+                — {displayVerse.reference}
+              </cite>
+            </>
+          ) : (
+            <div className="animate-pulse">
+              <div className="h-6 bg-slate-200 rounded mb-4 mx-auto max-w-md"></div>
+              <div className="h-4 bg-slate-200 rounded mb-2 mx-auto max-w-lg"></div>
+              <div className="h-4 bg-slate-200 rounded mb-2 mx-auto max-w-xl"></div>
+              <div className="h-4 bg-slate-200 rounded mb-4 mx-auto max-w-sm"></div>
+              <div className="h-4 bg-slate-200 rounded mx-auto max-w-xs"></div>
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* 刷新按钮 */}
-      <button
-        onClick={onRefresh}
-        disabled={isLoading}
-        className="group inline-flex items-center space-x-2 px-6 py-3 bg-white/10 hover:bg-white/20 
-                 disabled:opacity-50 disabled:cursor-not-allowed
-                 backdrop-blur-sm border border-white/20 rounded-full 
-                 transition-all duration-200 hover:scale-105 active:scale-95"
-      >
-        <RefreshCw 
-          className={`w-5 h-5 text-white transition-transform duration-200 
-                     ${isLoading ? 'animate-spin' : 'group-hover:rotate-180'}`} 
-        />
-        <span className="text-white font-medium">
-          {isLoading ? 'Loading...' : 'New Verse'}
-        </span>
-      </button>
+      
+      {/* Button area */}
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={onRefresh}
+          disabled={isLoading}
+          className="flex items-center justify-center w-12 h-12 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-sm transition-colors duration-200"
+          title="Get a new verse"
+        >
+          <RefreshCw 
+            size={20} 
+            className={isLoading ? 'animate-spin' : ''} 
+          />
+        </button>
+      </div>
     </div>
   );
 }
