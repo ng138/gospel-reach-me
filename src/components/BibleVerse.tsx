@@ -34,18 +34,18 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
 
   if (!displayVerse && !isLoading) {
     return (
-      <div className="w-full max-w-3xl mx-auto mb-8">
+      <div className="mb-6">
         <LiquidGlass
           displacementScale={60}
-          blurAmount={0.15}
+          blurAmount={0.0625}
           saturation={120}
           aberrationIntensity={2}
           elasticity={0.3}
           cornerRadius={12}
           className="w-full"
-          style={{ minHeight: '280px' }}
+          style={{ minHeight: '240px' }}
         >
-          <div className="flex items-center justify-center min-h-[280px] px-8 py-12">
+          <div className="flex items-center justify-center min-h-[240px] px-8 py-8">
             <p className="text-slate-600 text-center">Could not load verse. Please try again.</p>
           </div>
         </LiquidGlass>
@@ -54,18 +54,18 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto mb-8">
+    <div className="mb-6">
       <LiquidGlass
         displacementScale={60}
-        blurAmount={0.15}
+        blurAmount={0.0625}
         saturation={120}
         aberrationIntensity={2}
         elasticity={0.3}
         cornerRadius={12}
         className="w-full"
-        style={{ minHeight: '280px' }}
+        style={{ minHeight: '240px' }}
       >
-        <div className="flex flex-col justify-between min-h-[280px] px-8 py-12">
+        <div className="flex flex-col justify-between min-h-[240px] px-8 py-8">
           {/* Verse content area with fixed height */}
           <div className="flex-1 flex flex-col justify-center text-center">
             <div 
