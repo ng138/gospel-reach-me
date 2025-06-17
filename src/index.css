@@ -83,7 +83,7 @@
 }
 
 .main-card {
-  @apply max-w-3xl w-full mx-auto my-4 transition-all duration-300 space-y-6;
+  @apply max-w-3xl w-full mx-auto my-4 transition-all duration-300 space-y-6 flex flex-col items-center;
 }
 
 .verse-container {
