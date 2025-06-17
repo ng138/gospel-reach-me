@@ -1,7 +1,8 @@
-// Global statistics component with glassmorphism design
+// Global statistics component with liquid glass design
 import { useState, useEffect } from 'react';
 import { getGlobalStats, subscribeToStatsUpdates } from '../services/apiService';
 import { Globe, Heart } from 'lucide-react';
+import LiquidGlass from 'liquid-glass-react';
 
 export function GlobalStats() {
   const [stats, setStats] = useState({
@@ -45,13 +46,21 @@ export function GlobalStats() {
   if (isLoading) {
     return (
       <div className="py-6">
-        <div className="bg-white/75 backdrop-blur-md rounded-xl shadow-lg p-6">
+        <LiquidGlass
+          displacementScale={40}
+          blurAmount={0.1}
+          saturation={120}
+          aberrationIntensity={1}
+          elasticity={0.2}
+          cornerRadius={12}
+          padding="24px"
+        >
           <div className="flex flex-col items-center gap-4 animate-pulse">
             <div className="h-8 bg-slate-200 rounded w-48"></div>
             <div className="h-12 bg-slate-200 rounded w-32"></div>
             <div className="h-4 bg-slate-200 rounded w-60"></div>
           </div>
-        </div>
+        </LiquidGlass>
       </div>
     );
   }
@@ -64,35 +73,45 @@ export function GlobalStats() {
 
   return (
     <div className="py-6">
-      <div className="bg-white/75 backdrop-blur-md rounded-xl shadow-lg p-6 text-center">
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <Heart className="w-6 h-6 text-red-500" />
-          <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>
-        </div>
-        
-        <div className="space-y-4">
-          {/* Total reach count */}
-          <div>
-            <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-              {formattedTotal}
-            </div>
-            <p className="text-base text-slate-600">
-              Total gospel reaches
-            </p>
+      <LiquidGlass
+        displacementScale={40}
+        blurAmount={0.1}
+        saturation={120}
+        aberrationIntensity={1}
+        elasticity={0.2}
+        cornerRadius={12}
+        padding="24px"
+      >
+        <div className="text-center">
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Heart className="w-6 h-6 text-red-500" />
+            <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>
           </div>
           
-          {/* Country coverage */}
-          <div className="border-t border-slate-200 pt-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Globe className="w-5 h-5 text-blue-500" />
-              <span className="text-2xl font-bold text-blue-600">{countryCount}</span>
+          <div className="space-y-4">
+            {/* Total reach count */}
+            <div>
+              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
+                {formattedTotal}
+              </div>
+              <p className="text-base text-slate-600">
+                Total gospel reaches
+              </p>
             </div>
-            <p className="text-base text-slate-600">
-              Gospel activations across {countryCount} countries
-            </p>
+            
+            {/* Country coverage */}
+            <div className="border-t border-slate-200 pt-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Globe className="w-5 h-5 text-blue-500" />
+                <span className="text-2xl font-bold text-blue-600">{countryCount}</span>
+              </div>
+              <p className="text-base text-slate-600">
+                Gospel activations across {countryCount} countries
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </LiquidGlass>
     </div>
   );
 }
