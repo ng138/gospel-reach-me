@@ -65,7 +65,7 @@
   
   /* 通用玻璃卡片布局 */
   .glass-card {
-    @apply w-full max-w-3xl mx-auto bg-white/75 backdrop-blur-lg rounded-xl shadow-md p-6;
+    @apply w-full max-w-3xl mx-auto bg-white/50 backdrop-blur-xl rounded-xl shadow-md p-6;
   }
 }
 
