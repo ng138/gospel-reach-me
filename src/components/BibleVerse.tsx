@@ -40,23 +40,23 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
   }
 
   return (
-    <div className="glass-card mb-6 h-60 flex flex-col justify-between">
-      {/* Verse content area with fixed height */}
-      <div className="flex-1 flex flex-col justify-center text-center">
+    <div className="glass-card mb-6 h-60 relative">
+      {/* Verse content area with padding bottom to avoid button overlap */}
+      <div className="h-full flex flex-col justify-center text-center pb-12">
         <div 
           className={`transition-opacity duration-300 ease-in-out ${
             isTransitioning ? 'opacity-30' : 'opacity-100'
           }`}
         >
           {displayVerse ? (
-            <>
+            <div className="transform scale-75 origin-center">
               <blockquote className="verse-text mb-4">
                 "{displayVerse.verse_content || displayVerse.text}"
               </blockquote>
               <cite className="verse-reference">
                 — {displayVerse.reference}
               </cite>
-            </>
+            </div>
           ) : (
             <div className="animate-pulse">
               <div className="h-6 bg-slate-200 rounded mb-4 mx-auto max-w-md"></div>
@@ -69,20 +69,15 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
         </div>
       </div>
       
-      {/* Button area */}
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={onRefresh}
-          disabled={isLoading}
-          className="flex items-center justify-center w-12 h-12 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-sm transition-colors duration-200"
-          title="Get a new verse"
-        >
-          <RefreshCw 
-            size={20} 
-            className={isLoading ? 'animate-spin' : ''} 
-          />
-        </button>
-      </div>
+      {/* 完全固定的底部刷新按钮 - 不受内容变化影响 */}
+      <button
+        onClick={onRefresh}
+        disabled={isLoading}
+        title="Get a new verse"
+        className="absolute bottom-3 left-1/2 transform -translate-x-1/2 scale-50 w-9 h-9 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center z-10"
+      >
+        <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
+      </button>
     </div>
   );
 }
