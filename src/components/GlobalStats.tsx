@@ -45,20 +45,23 @@ export function GlobalStats() {
 
   if (isLoading) {
     return (
-      <div className="py-6">
+      <div className="w-full max-w-3xl mx-auto mb-8">
         <LiquidGlass
-          displacementScale={40}
-          blurAmount={0.1}
+          displacementScale={50}
+          blurAmount={0.15}
           saturation={120}
-          aberrationIntensity={1}
-          elasticity={0.2}
+          aberrationIntensity={1.5}
+          elasticity={0.25}
           cornerRadius={12}
-          padding="24px"
+          className="w-full"
+          style={{ minHeight: '200px' }}
         >
-          <div className="flex flex-col items-center gap-4 animate-pulse">
-            <div className="h-8 bg-slate-200 rounded w-48"></div>
-            <div className="h-12 bg-slate-200 rounded w-32"></div>
-            <div className="h-4 bg-slate-200 rounded w-60"></div>
+          <div className="flex flex-col items-center justify-center min-h-[200px] px-8 py-8">
+            <div className="flex flex-col items-center gap-4 animate-pulse">
+              <div className="h-8 bg-slate-200 rounded w-48"></div>
+              <div className="h-12 bg-slate-200 rounded w-32"></div>
+              <div className="h-4 bg-slate-200 rounded w-60"></div>
+            </div>
           </div>
         </LiquidGlass>
       </div>
@@ -72,17 +75,18 @@ export function GlobalStats() {
   const countryCount = Object.keys(stats.countries).length;
 
   return (
-    <div className="py-6">
+    <div className="w-full max-w-3xl mx-auto mb-8">
       <LiquidGlass
-        displacementScale={40}
-        blurAmount={0.1}
+        displacementScale={50}
+        blurAmount={0.15}
         saturation={120}
-        aberrationIntensity={1}
-        elasticity={0.2}
+        aberrationIntensity={1.5}
+        elasticity={0.25}
         cornerRadius={12}
-        padding="24px"
+        className="w-full"
+        style={{ minHeight: '200px' }}
       >
-        <div className="text-center">
+        <div className="flex flex-col items-center justify-center min-h-[200px] px-8 py-8 text-center">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Heart className="w-6 h-6 text-red-500" />
             <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>

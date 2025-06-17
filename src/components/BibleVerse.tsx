@@ -34,34 +34,38 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
 
   if (!displayVerse && !isLoading) {
     return (
-      <div className="min-h-[280px] flex items-center justify-center mb-24">
+      <div className="w-full max-w-3xl mx-auto mb-8">
         <LiquidGlass
-          displacementScale={50}
-          blurAmount={0.08}
-          saturation={110}
-          aberrationIntensity={1.5}
-          elasticity={0.25}
+          displacementScale={60}
+          blurAmount={0.15}
+          saturation={120}
+          aberrationIntensity={2}
+          elasticity={0.3}
           cornerRadius={12}
-          padding="32px 24px"
+          className="w-full"
+          style={{ minHeight: '280px' }}
         >
-          <p className="text-slate-600 text-center">Could not load verse. Please try again.</p>
+          <div className="flex items-center justify-center min-h-[280px] px-8 py-12">
+            <p className="text-slate-600 text-center">Could not load verse. Please try again.</p>
+          </div>
         </LiquidGlass>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[280px] mb-24">
+    <div className="w-full max-w-3xl mx-auto mb-8">
       <LiquidGlass
-        displacementScale={50}
-        blurAmount={0.08}
-        saturation={110}
-        aberrationIntensity={1.5}
-        elasticity={0.25}
+        displacementScale={60}
+        blurAmount={0.15}
+        saturation={120}
+        aberrationIntensity={2}
+        elasticity={0.3}
         cornerRadius={12}
-        padding="32px 24px"
+        className="w-full"
+        style={{ minHeight: '280px' }}
       >
-        <div className="flex flex-col justify-between min-h-[216px]">
+        <div className="flex flex-col justify-between min-h-[280px] px-8 py-12">
           {/* Verse content area with fixed height */}
           <div className="flex-1 flex flex-col justify-center text-center">
             <div 
