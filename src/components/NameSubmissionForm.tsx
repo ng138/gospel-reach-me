@@ -45,66 +45,64 @@ export function NameSubmissionForm({ anonymousId }: NameSubmissionFormProps) {
   };
 
   return (
-    <div className="mb-6">
-      <LiquidGlass
-        displacementScale={50}
-        blurAmount={0.0625}
-        saturation={120}
-        aberrationIntensity={1.5}
-        elasticity={0.25}
-        cornerRadius={12}
-        className="w-full"
-        style={{ minHeight: '240px' }}
-      >
-        <div className="flex flex-col justify-center min-h-[240px] px-8 py-8">
-          <h2 className="text-xl font-semibold text-slate-800 mb-3 text-center">
-            Share Your Name
-          </h2>
-          <p className="text-slate-600 mb-4 text-center">
-            How would you like to be addressed?
-          </p>
-          
-          {submitStatus === 'success' ? (
-            <div className="p-4 bg-success/10 rounded-lg text-success font-medium mb-4 text-center">
-              Thank you for sharing your name and we will keep you in our prayer.
+    <LiquidGlass
+      className="glass-card"
+      displacementScale={50}
+      blurAmount={0.0625}
+      saturation={120}
+      aberrationIntensity={1.5}
+      elasticity={0.25}
+      cornerRadius={12}
+      style={{ height: '240px' }}
+    >
+      <div className="flex flex-col justify-center h-full px-8 py-8">
+        <h2 className="text-xl font-semibold text-slate-800 mb-3 text-center">
+          Share Your Name
+        </h2>
+        <p className="text-slate-600 mb-4 text-center">
+          How would you like to be addressed?
+        </p>
+        
+        {submitStatus === 'success' ? (
+          <div className="p-4 bg-success/10 rounded-lg text-success font-medium mb-4 text-center">
+            Thank you for sharing your name and we will keep you in our prayer.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {submitStatus === 'error' && (
+              <div className="p-4 bg-error/10 rounded-lg text-error font-medium">
+                {errorMessage}
+              </div>
+            )}
+            
+            <div>
+              <label htmlFor="name-input" className="block text-sm font-medium text-slate-700 mb-1">
+                Your Name
+              </label>
+              <input
+                id="name-input"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                className="name-input"
+                disabled={isSubmitting}
+              />
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {submitStatus === 'error' && (
-                <div className="p-4 bg-error/10 rounded-lg text-error font-medium">
-                  {errorMessage}
-                </div>
-              )}
-              
-              <div>
-                <label htmlFor="name-input" className="block text-sm font-medium text-slate-700 mb-1">
-                  Your Name
-                </label>
-                <input
-                  id="name-input"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="name-input"
-                  disabled={isSubmitting}
-                />
-              </div>
-              
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="submit-button"
-                  disabled={isSubmitting}
-                >
-                  <Send size={18} />
-                  <span>Submit</span>
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
-      </LiquidGlass>
-    </div>
+            
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isSubmitting}
+              >
+                <Send size={18} />
+                <span>Submit</span>
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </LiquidGlass>
   );
 }

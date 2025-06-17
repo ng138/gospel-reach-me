@@ -45,26 +45,24 @@ export function GlobalStats() {
 
   if (isLoading) {
     return (
-      <div className="mb-6">
-        <LiquidGlass
-          displacementScale={50}
-          blurAmount={0.0625}
-          saturation={120}
-          aberrationIntensity={1.5}
-          elasticity={0.25}
-          cornerRadius={12}
-          className="w-full"
-          style={{ minHeight: '240px' }}
-        >
-          <div className="flex flex-col items-center justify-center min-h-[240px] px-8 py-8">
-            <div className="flex flex-col items-center gap-4 animate-pulse">
-              <div className="h-8 bg-slate-200 rounded w-48"></div>
-              <div className="h-12 bg-slate-200 rounded w-32"></div>
-              <div className="h-4 bg-slate-200 rounded w-60"></div>
-            </div>
+      <LiquidGlass
+        className="glass-card"
+        displacementScale={50}
+        blurAmount={0.0625}
+        saturation={120}
+        aberrationIntensity={1.5}
+        elasticity={0.25}
+        cornerRadius={12}
+        style={{ height: '240px' }}
+      >
+        <div className="flex flex-col items-center justify-center h-full px-8 py-8">
+          <div className="flex flex-col items-center gap-4 animate-pulse">
+            <div className="h-8 bg-slate-200 rounded w-48"></div>
+            <div className="h-12 bg-slate-200 rounded w-32"></div>
+            <div className="h-4 bg-slate-200 rounded w-60"></div>
           </div>
-        </LiquidGlass>
-      </div>
+        </div>
+      </LiquidGlass>
     );
   }
 
@@ -75,47 +73,45 @@ export function GlobalStats() {
   const countryCount = Object.keys(stats.countries).length;
 
   return (
-    <div className="mb-6">
-      <LiquidGlass
-        displacementScale={50}
-        blurAmount={0.0625}
-        saturation={120}
-        aberrationIntensity={1.5}
-        elasticity={0.25}
-        cornerRadius={12}
-        className="w-full"
-        style={{ minHeight: '240px' }}
-      >
-        <div className="flex flex-col items-center justify-center min-h-[240px] px-8 py-8 text-center">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <Heart className="w-6 h-6 text-red-500" />
-            <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>
+    <LiquidGlass
+      className="glass-card"
+      displacementScale={50}
+      blurAmount={0.0625}
+      saturation={120}
+      aberrationIntensity={1.5}
+      elasticity={0.25}
+      cornerRadius={12}
+      style={{ height: '240px' }}
+    >
+      <div className="flex flex-col items-center justify-center h-full px-8 py-8 text-center">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <Heart className="w-6 h-6 text-red-500" />
+          <h3 className="text-xl font-semibold text-slate-800">Gospel Reach Times</h3>
+        </div>
+        
+        <div className="space-y-4">
+          {/* Total reach count */}
+          <div>
+            <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
+              {formattedTotal}
+            </div>
+            <p className="text-base text-slate-600">
+              Total gospel reaches
+            </p>
           </div>
           
-          <div className="space-y-4">
-            {/* Total reach count */}
-            <div>
-              <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
-                {formattedTotal}
-              </div>
-              <p className="text-base text-slate-600">
-                Total gospel reaches
-              </p>
+          {/* Country coverage */}
+          <div className="border-t border-slate-200 pt-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Globe className="w-5 h-5 text-blue-500" />
+              <span className="text-2xl font-bold text-blue-600">{countryCount}</span>
             </div>
-            
-            {/* Country coverage */}
-            <div className="border-t border-slate-200 pt-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Globe className="w-5 h-5 text-blue-500" />
-                <span className="text-2xl font-bold text-blue-600">{countryCount}</span>
-              </div>
-              <p className="text-base text-slate-600">
-                Gospel activations across {countryCount} countries
-              </p>
-            </div>
+            <p className="text-base text-slate-600">
+              Gospel activations across {countryCount} countries
+            </p>
           </div>
         </div>
-      </LiquidGlass>
-    </div>
+      </div>
+    </LiquidGlass>
   );
 }
