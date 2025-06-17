@@ -49,11 +49,11 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
           }`}
         >
           {displayVerse ? (
-            <div className="transform scale-75 origin-center">
-              <blockquote className="verse-text mb-4">
+            <div className="flex flex-col items-center justify-center">
+              <blockquote className="verse-text mb-4 text-center">
                 "{displayVerse.verse_content || displayVerse.text}"
               </blockquote>
-              <cite className="verse-reference">
+              <cite className="verse-reference text-center">
                 — {displayVerse.reference}
               </cite>
             </div>
@@ -74,9 +74,9 @@ export function BibleVerse({ verse, isLoading, onRefresh }: BibleVerseProps) {
         onClick={onRefresh}
         disabled={isLoading}
         title="Get a new verse"
-        className="absolute bottom-3 left-1/2 transform -translate-x-1/2 scale-50 w-9 h-9 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center z-10"
+        className="absolute bottom-3 left-1/2 transform -translate-x-1/2 scale-[0.625] w-9 h-9 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg shadow-md transition-colors duration-200 flex items-center justify-center z-10"
       >
-        <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
+        <RefreshCw size={15} className={isLoading ? 'animate-spin' : ''} />
       </button>
     </div>
   );

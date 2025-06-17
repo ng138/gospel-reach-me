@@ -27,7 +27,7 @@
   }
 
   .verse-text {
-    @apply text-base md:text-lg lg:text-xl font-serif leading-relaxed md:leading-relaxed;
+    @apply text-lg md:text-xl lg:text-2xl font-serif leading-relaxed md:leading-relaxed;
     font-family: 'Crimson Pro', Georgia, serif;
   }
   
@@ -65,7 +65,7 @@
   
   /* 通用玻璃卡片布局 */
   .glass-card {
-    @apply w-full max-w-3xl mx-auto bg-white/50 backdrop-blur-lg rounded-xl shadow-md p-6;
+    @apply w-full max-w-3xl mx-auto bg-white/75 backdrop-blur-sm rounded-xl shadow-md p-6;
   }
 }
 
