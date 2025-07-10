@@ -7,10 +7,11 @@
 - **5 Languages**: English, French, German, Spanish, Italian
 - **11 Bible Versions**: Multiple translations per language
 - **5,500+ Verses**: Curated collection of inspirational Bible verses
+- **Audio Playback**: Listen to verses with text-to-speech in all languages
 - **Beautiful UI**: Modern, responsive design with background images
-- **Global Analytics**: Simulated worldwide usage statistics
+- **Global Analytics**: Real-time worldwide usage statistics
 - **Geo-location**: Automatic language detection based on location
-- **Pure Frontend**: No backend required - runs entirely in the browser
+- **Cloudflare Powered**: Uses Workers, Pages, and Durable Objects
 
 ## 🌍 Supported Languages & Versions
 
@@ -44,9 +45,24 @@ npm run build
 npm run preview
 ```
 
+## 🎵 Audio Feature
+
+The application includes a built-in audio player that allows users to listen to Bible verses:
+
+- **Text-to-Speech**: Uses Web Speech API for immediate audio playback
+- **Multi-language Support**: Works with all 5 supported languages
+- **Voice Options**: Male/female voice selection (browser-dependent)
+- **Future Ready**: Supports pre-recorded audio files when available
+
+### Audio Implementation Status
+- ✅ Web Speech API integration complete
+- ✅ FloatingAudioPlayer with play/pause controls
+- ✅ Volume and voice selection
+- 🔜 Premium pre-recorded audio files (optional upgrade)
+
 ## 📦 Deployment
 
-This is a **pure frontend application** that can be deployed to any static hosting service:
+This application uses **Cloudflare's full stack**:
 
 ### Cloudflare Pages (Recommended)
 1. Connect your GitHub repository
@@ -62,11 +78,19 @@ This is a **pure frontend application** that can be deployed to any static hosti
 
 ## 🛠 Technology Stack
 
-- **Frontend**: React 18 + TypeScript
+### Frontend
+- **Framework**: React 18 + TypeScript
 - **Build Tool**: Vite 6
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS + Glass Morphism
 - **Icons**: Lucide React
-- **Data**: JSON files (included in build)
+- **Audio**: Web Speech API + FloatingAudioPlayer
+
+### Backend (Cloudflare)
+- **Hosting**: Cloudflare Pages
+- **API**: Cloudflare Workers
+- **Database**: Cloudflare D1 (planned)
+- **Storage**: Cloudflare R2 (for future audio files)
+- **Real-time**: Durable Objects (for global stats)
 
 ## 📊 Data Structure
 

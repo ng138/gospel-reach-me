@@ -179,6 +179,21 @@ wrangler dev --local
 - **Worker**: https://gospel-reach-me-worker.ng138.workers.dev
 - **GitHub**: https://github.com/ng138/gospel-reach-me
 
+## 🎵 Audio Feature Configuration
+
+### Current Implementation
+The application uses Web Speech API for text-to-speech functionality:
+- No additional setup required
+- Works immediately in all modern browsers
+- Supports all 5 languages
+
+### Future Audio Upgrade (Optional)
+To add pre-recorded audio files:
+1. Generate audio using `scripts/generate_tts_audio.py`
+2. Upload to Cloudflare R2
+3. Create and deploy `tts-manifest.json`
+4. The FloatingAudioPlayer will automatically use pre-recorded audio
+
 ## 🔧 Configuration Files
 
 ### Frontend Environment Variables
@@ -189,9 +204,10 @@ VITE_WORKER_URL=http://localhost:8787
 
 ### Worker Configuration
 Update `worker/wrangler.toml` with your specific settings:
-- Account ID
+- Account ID (add: `account_id = "YOUR_ACCOUNT_ID"`)
 - KV namespace IDs  
-- R2 bucket name
+- D1 database ID (for future features)
+- R2 bucket name (for audio storage)
 - Custom domain (if any)
 
 ## 🚨 Troubleshooting

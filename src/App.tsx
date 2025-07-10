@@ -153,14 +153,8 @@ function App() {
 
   // 获取当前语言的TTS语言代码
   const getTTSLanguage = (lang: string) => {
-    const languageMap: { [key: string]: string } = {
-      'EN': 'en',
-      'FR': 'fr', 
-      'IT': 'it',
-      'ES': 'es',
-      'DE': 'de'
-    };
-    return languageMap[lang] || 'en';
+    // Just return the language code as-is since our TTS service expects uppercase
+    return lang;
   };
 
   // 获取当前版本的TTS版本代码
@@ -213,6 +207,8 @@ function App() {
           language={getTTSLanguage(currentLanguage)}
           version={getTTSVersion(currentVersion)}
           isVisible={!isLoading && !!verse}
+          verseText={verse.text}
+          verseReference={verse.reference}
         />
       )}
     </>

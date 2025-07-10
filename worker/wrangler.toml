@@ -16,6 +16,40 @@ new_classes = ["GlobalCounter"]
 [vars]
 # Add any public environment variables here
 
+# D1 Database Binding
+[[d1_databases]]
+binding = "PRAYERS_DB"
+database_name = "gospel-reach-prayers"
+database_id = "YOUR_DATABASE_ID" # Replace with actual ID after running: wrangler d1 create gospel-reach-prayers
+
+# KV Namespaces for caching
+[[kv_namespaces]]
+binding = "PRAYER_CACHE"
+id = "YOUR_PRAYER_CACHE_ID" # Replace after: wrangler kv:namespace create "PRAYER_CACHE"
+
+[[kv_namespaces]]
+binding = "TRANSLATION_CACHE"
+id = "YOUR_TRANSLATION_CACHE_ID" # Replace after: wrangler kv:namespace create "TRANSLATION_CACHE"
+
+# R2 Bucket for prayer-related media
+[[r2_buckets]]
+binding = "PRAYERS_MEDIA"
+bucket_name = "gospel-reach-prayers-media"
+
+# Additional Durable Object for Prayer Room
+[[durable_objects.bindings]]
+name = "PRAYER_ROOM_DO"
+class_name = "PrayerRoom"
+
+# Update migrations to include new Durable Object
+[[migrations]]
+tag = "v2"
+new_classes = ["PrayerRoom"]
+
 # Secrets
 # Use `wrangler secret put TURNSTILE_SECRET_KEY` to set this
 # TURNSTILE_SECRET_KEY
+# Use `wrangler secret put DEEPL_API_KEY` to set this
+# DEEPL_API_KEY
+# Use `wrangler secret put MODERATION_ACCESS_TOKEN` to set this
+# MODERATION_ACCESS_TOKEN
